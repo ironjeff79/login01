@@ -51,7 +51,7 @@ export default {
         axios({
           method: 'post',
           url: 'http://localhost:8080/login',
-          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded'},
           data: JSON.stringify(this.data1)
         })
           .then((response) => {
