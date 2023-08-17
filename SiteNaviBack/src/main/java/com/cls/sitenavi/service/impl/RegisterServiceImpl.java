@@ -1,5 +1,8 @@
 package com.cls.sitenavi.service.impl;
+import com.cls.common.util.Util;
+import com.cls.sitenavi.entity.User;
 import com.cls.sitenavi.service.IRegisterService;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
@@ -22,9 +25,10 @@ public class RegisterServiceImpl implements IRegisterService {
         List<Map<String, Object>> list = jdbcTemplate.queryForList(sql);
         return list;
     }
-    public void updateUserInfo(String userId,String mail,String phoneNum,String password){
-        String sql = "insert into user (userId,mail,phoneNum,password) values ('" + userId + "'"
-                + ",'" + mail + "'" + ",'" + phoneNum + "'" + ",'" + password + "')";
+    public void updateUserInfo(User user){
+        String pass= Util.code(user.getPassword()) ;
+        String sql = "insert into user (userId,mail,phoneNum,password) values ('" + user.getUserId() + "'"
+                + ",'" + user.getMail() + "'" + ",'" + user.getPhoneNum() + "'" + ",'" + pass + "')";
         jdbcTemplate.execute(sql);
     }
 }

@@ -60,6 +60,7 @@ export default {
               location.href = "/login?userId=" + this.ruleForm.userId;
             }
             else if (data3.code == "warning") {
+              console.log(data3);
               ElMessage.warning(data3.msg);
             }
           })
@@ -70,13 +71,13 @@ export default {
         return false;
       }
     }, registerForm() {
-      this.$router.push({ path: '/register' });
+      this.$router.push({ path: '/register'});
 
     },
 
-    goPortal() {
-      location.href = "/login?userId=" + this.ruleForm.userId;
-    },
+    // goPortal() {
+    //   location.href = "/login?userId=" + this.ruleForm.userId;
+    // },
   }
 }
 

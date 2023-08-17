@@ -1,4 +1,5 @@
 package com.cls.sitenavi.service.impl;
+import com.cls.common.util.Util;
 import  com.cls.sitenavi.service.ILoginService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -14,7 +15,8 @@ public class LoginServiceImpl implements ILoginService {
     public JdbcTemplate jdbcTemplate;
     @Override
     public List<Map<String, Object>> getUserInfo(String userId,String password){
-        String sql = "select * from user where userId = '"  + userId + "' and password ='" + password + "'";
+        String pass= Util.code(password) ;
+        String sql = "select * from user where userId = '"  + userId + "' and password ='" + pass + "'";
         List<Map<String, Object>> list = jdbcTemplate.queryForList(sql);
         return list;
     }

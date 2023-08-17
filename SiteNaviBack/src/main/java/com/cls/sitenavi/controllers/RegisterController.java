@@ -1,6 +1,7 @@
 package com.cls.sitenavi.controllers;
 
 import com.alibaba.fastjson.JSON;
+import com.cls.common.util.Result;
 import com.cls.sitenavi.entity.User;
 import com.cls.sitenavi.entity.Message;
 import com.cls.sitenavi.service.IRegisterService;
@@ -14,33 +15,32 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.List;
 import java.util.Map;
 
 @CrossOrigin(origins = "http://localhost:8081")
-@SpringBootApplication
 @RestController
 public class RegisterController {
     @Autowired
     public IRegisterService registerService;
-
     @GetMapping("/register")
     public String register() {
         return String.format("111");
     }
 
     @PostMapping("/register")
-    public String getJson2(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+    public String register(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         // 获取JSON数据
-        ServletInputStream is = req.getInputStream();
-        byte[] buffer = new byte[1024];
-        StringBuilder sb = new StringBuilder();
-        while (is.read(buffer) != -1) {
-            sb.append(new String(buffer, "utf-8"));
+        BufferedReader streamReader = new BufferedReader( new InputStreamReader(req.getInputStream(), "UTF-8"));
+        StringBuilder responseStrBuilder = new StringBuilder();
+        String inputStr;
+        while ((inputStr = streamReader.readLine()) != null) {
+            responseStrBuilder.append(inputStr);
         }
-        String json = sb.toString().trim();
-        User user = JSON.parseObject(json, User.class);
+        User user = JSON.parseObject(responseStrBuilder.toString(), User.class);
         //ユーザー名とメールが重複するかどうかの判断
         List<Map<String, Object>> list = registerService.getUserId(user.getUserId());
         List<Map<String, Object>> list2 = registerService.getMail(user.getMail());
@@ -48,19 +48,16 @@ public class RegisterController {
         if (list.size() > 0) {
             msg.setCode("warning");
             msg.setMsg("ユーザー名が重複しています");
-            String msg1 = JSON.toJSONString(msg);
-            return msg1;
+            return JSON.toJSONString(msg);
         } else if (list2.size() > 0) {
             msg.setCode("warning");
             msg.setMsg("メールアドレスはすでに使用されています");
-            String msg1 = JSON.toJSONString(msg);
-            return msg1;
+            return JSON.toJSONString(msg);
         } else {
-            registerService.updateUserInfo(user.getUserId(),user.getMail(),user.getPhoneNum(),user.getPassword());
+            registerService.updateUserInfo(user);
             msg.setCode("success");
             msg.setMsg("ユーザーが登録しました。");
-            String msg1 = JSON.toJSONString(msg);
-            return msg1;
+            return JSON.toJSONString(msg);
         }
     }
 }
