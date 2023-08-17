@@ -5,11 +5,9 @@ import com.cls.common.util.Result;
 import com.cls.sitenavi.entity.User;
 import com.cls.sitenavi.entity.Message;
 import com.cls.sitenavi.service.IRegisterService;
-import jakarta.servlet.ServletInputStream;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -54,7 +52,7 @@ public class RegisterController {
             msg.setMsg("メールアドレスはすでに使用されています");
             return JSON.toJSONString(msg);
         } else {
-            registerService.updateUserInfo(user);
+            registerService.insertUserInfo(user);
             msg.setCode("success");
             msg.setMsg("ユーザーが登録しました。");
             return JSON.toJSONString(msg);
