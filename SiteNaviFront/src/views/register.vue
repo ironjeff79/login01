@@ -110,7 +110,7 @@ export default {
         axios({
           method: 'post',
           url: 'http://localhost:8080/register',
-          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded'},
           data: JSON.stringify(this.data2)
         })
           .then((response) => {
@@ -130,10 +130,6 @@ export default {
     }
   },
   created() {
-    this.mail = this.$route.query.mail;
-    this.userId = this.$route.query.userId;
-    this.phoneNum = this.$route.query.phoneNum;
-    this.pass = this.$route.query.pass;
   },
 }
 </script>
@@ -144,6 +140,5 @@ export default {
   left: calc(50% - 200px);
   top: 20%;
   width: 400px;
-
 }
 </style>

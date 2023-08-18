@@ -1,5 +1,5 @@
 <template>
-  <el-form :model="ruleForm" status-icon :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm">
+  <el-form :model="ruleForm" status-icon :rules="rules" ref="ruleForm" label-width="190px" class="demo-ruleForm">
     <el-form-item label="ユーザー名" prop="userId">
       <el-input type="username" v-model="ruleForm.userId" autocomplete="off" clearable></el-input>
     </el-form-item>
@@ -14,7 +14,7 @@
 </template>
 <script>
 import axios, {} from 'axios'
-import { ElMessage } from 'element-plus'
+import { ElMessage} from 'element-plus'
 export default {
   data() {
     return {
@@ -41,7 +41,6 @@ export default {
       }
       return true;
     },
-
     submitForm() {
       if (this.validForm() == true) {
         this.data1 = {
@@ -57,7 +56,12 @@ export default {
           .then((response) => {
             var data3 = response.data;
             if (data3.code == "success") {
+              // console.log("response.data");
+              // console.log(response.data);
+              // localStorage.setItem("token",response.data.user)
+              // console.log(localStorage.getItem("token"));
               location.href = "/login?userId=" + this.ruleForm.userId;
+              // console.log(localStorage.getItem);
             }
             else if (data3.code == "warning") {
               console.log(data3);
@@ -70,14 +74,10 @@ export default {
       } else {
         return false;
       }
-    }, registerForm() {
+    }, 
+    registerForm() {
       this.$router.push({ path: '/register'});
-
-    },
-
-    // goPortal() {
-    //   location.href = "/login?userId=" + this.ruleForm.userId;
-    // },
+    }
   }
 }
 
@@ -85,7 +85,7 @@ export default {
 <style scoped>
 .demo-ruleForm {
   position: absolute;
-  left: calc(50% - 200px);
+  left: calc(50% - 300px);
   top: 20%;
   width: 400px;
 }

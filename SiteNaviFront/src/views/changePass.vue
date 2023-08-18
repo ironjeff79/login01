@@ -1,14 +1,21 @@
 <template>
     <div class="layout">
-      <li class="userId">
-        {{ userId }}さん！
-      </li>
       <el-form :model="ruleForm" status-icon :rules="rules" ref="ruleForm" label-width="100px" style="max-width: 400px">
-        <el-form-item label="ユーザー名" prop="userId">
+        <el-form-item label="メール" prop="mail" >
           <span style="color:rgb(255, 255, 255);display: inline;">*</span>
-          <el-input style="display: inline;width:280px" type="username" v-model="ruleForm.userId" autocomplete="off">
+          <el-input style="display: inline;width:280px" type="text" v-model="ruleForm.mail"  :disabled = "true" >
             clearable></el-input>
         </el-form-item>
+        <el-form-item label="ユーザー名" prop="userId">
+          <span style="color:rgb(255, 255, 255);display: inline;">*</span>
+          <el-input style="display: inline;width:280px" type="text" v-model="ruleForm.userId"  >
+            clearable></el-input>
+        </el-form-item>
+        <el-form-item label="携帯電話" prop="phoneNum">
+        <span style="color:rgb(255, 255, 255);display: inline;">*</span>
+        <el-input style="display: inline;width:280px" type="phoneNum" v-model="ruleForm.phoneNum" autocomplete="off"
+          clearable></el-input>
+      </el-form-item>
         <el-form-item label="パスワード" prop="pass">
           <span style="color:red;display: inline;">*</span>
           <el-input style="display: inline;width:280px" type="password" v-model="ruleForm.pass" autocomplete="off"
@@ -20,7 +27,7 @@
             show-password></el-input>
         </el-form-item>
         <el-form-item>
-          <el-button type="info" @click="registerForm('ruleForm')">変更</el-button>
+          <el-button type="primary" @click="registerForm('ruleForm')">変更</el-button>
           <el-button type="info" @click="backForm('ruleForm')">戻る</el-button>
         </el-form-item>
       </el-form>
@@ -32,7 +39,8 @@
   import { ElMessage } from 'element-plus';
   
   export default {
-    props: ['Id'],
+    props: [
+    ],
     data() {
       return {
         userId: '',
@@ -78,9 +86,10 @@
       registerForm() {
         if (this.validForm() == true) {
           this.data2 = {
-            newUserId: this.ruleForm.userId,
-            userId : this.userId,
-            password: this.ruleForm.pass
+            userId : this.ruleForm.userId,
+            password: this.ruleForm.pass,
+            phoneNum: this.ruleForm.phoneNum,
+            mail:this.ruleForm.mail
           };
           axios({
             method: 'post',
@@ -108,10 +117,8 @@
     }
     },
     created() {
-      this.mail = this.$route.query.mail;
-      this.userId = this.$route.query.userId;
-      this.phoneNum = this.$route.query.phoneNum;
-      this.pass = this.$route.query.pass;
+      this.ruleForm.mail = this.$route.query.mail;
+      this.ruleForm.userId = this.$route.query.userId;
     }
   }
   </script>
@@ -122,6 +129,5 @@
     left: calc(50% - 200px);
     top: 20%;
     width: 400px;
-  
   }
   </style>

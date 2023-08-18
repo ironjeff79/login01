@@ -11,16 +11,32 @@
 </template>
 
 <script>
+import axios, { } from 'axios'
 export default {
   props: ['Id'],
   data() {
     return {
+      data1: {},
       userId: '',
     };
   },
   methods: {
-    changePassButton() {
-      location.href =  "/changePass?userId=" + this.userId;
+    changePassButton() {    
+        this.data1 = {
+          userId: this.userId
+        };
+        axios({
+          method: 'post',
+          url: 'http://localhost:8080/portal',
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+          data: JSON.stringify(this.data1)
+        })
+          .then((response) => {
+              this.$router.push({name:'changePass', query:response.data});
+          })
+          .catch(function (error) { // 请求失败处理
+            console.log(error);
+          });
     },
     logOutButton() {
       location.href = "/";

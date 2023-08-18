@@ -23,11 +23,11 @@ const router = createRouter({
       name: 'register',
       component: register
     },{
-      path: '/changePass',
+      path: '/changePass/',
       name: 'changePass',
-      component: changePass
+      component: changePass,
+      query:undefined
     }
-
   ]
 })
 export default router
