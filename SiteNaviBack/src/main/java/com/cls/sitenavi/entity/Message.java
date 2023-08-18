@@ -4,6 +4,7 @@ import lombok.Data;
 public class Message<T> {
     private String code;
     private String msg;
+    private User user;
     public String getCode() {
         return code;
     }

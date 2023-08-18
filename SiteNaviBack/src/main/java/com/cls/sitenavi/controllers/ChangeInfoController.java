@@ -14,8 +14,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.List;
-import java.util.Map;
 
 @CrossOrigin(origins = "http://localhost:8081")
 @RestController
@@ -38,24 +36,16 @@ public class ChangeInfoController {
             responseStrBuilder.append(inputStr);
         }
         User user = JSON.parseObject(responseStrBuilder.toString(), User.class);
-        System.out.println("user");
-        System.out.println(user);
-//        List<Map<String, Object>> list = changeService.changeUserInfo(user.getUserId(), user.getNewUserId(), user.getPassword());
-//        List<Map<String, Object>> list2 = changeService.changeUserInfo(user.getUserId(), user.getNewUserId(), user.getPassword());
+        User list = changeService.getInfo(user);
         Message msg = new Message();
-
-        if (null == user.getNewUserId()) {
-            msg.setCode("success");
-            msg.setMsg("パスワードが変更しました！");
-            System.out.println("1");
-            changeService.changePass(user.getUserId(), user.getPassword());
+        if (list != null) {
+            msg.setCode("warning");
+            msg.setMsg("ユーザー名は重複しています！");
             return JSON.toJSONString(msg);
-
-        } else {
+        }else {
             msg.setCode("success");
             msg.setMsg("ユーザー情報が変更しました");
-            changeService.changeUserInfo(user);
-            System.out.println("!!");
+            changeService.changeInfo(user);
             return JSON.toJSONString(msg);
         }
     }

@@ -1,8 +1,8 @@
 package com.cls.sitenavi.service;
-import java.util.List;
-import java.util.Map;
+import com.cls.sitenavi.entity.User;
 
 public interface ILoginService {
 
-    List<Map<String, Object>>  getUserInfo(String userId,String password);
+    User getUserInfo(User user);
+    User getMail(User user);
 }
