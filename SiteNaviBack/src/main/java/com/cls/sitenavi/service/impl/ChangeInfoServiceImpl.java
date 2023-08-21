@@ -16,7 +16,7 @@ public class ChangeInfoServiceImpl implements IChangeService {
     public JdbcTemplate jdbcTemplate;
     @Override
     public User getInfo(User user){
-        String sql = "select * from user where userId = '" + user.getUserId() + "' and mail <> '" + user.getMail() + "'" ;
+        String sql = "select * from user where mail = '" + user.getMail() + "' and userId <> '" + user.getUserId() + "'" ;
         User user1 = new User();
         List<User> userList = jdbcTemplate.query(sql, new Object[]{}, new BeanPropertyRowMapper<User>(User.class));
         if (null != userList && userList.size() > 0) {
@@ -26,8 +26,12 @@ public class ChangeInfoServiceImpl implements IChangeService {
         return null;
     }
     public void changeInfo(User user){
+    String sql = "update user set mail = '" + user.getMail() + "',password = '" + user.getPassword() +"',phoneNum ='" + user.getPhoneNum() + "' where userId = '" + user.getUserId() + "'";
+        jdbcTemplate.execute(sql);
+    }
+    public void changePass(User user){
         String pass= Util.code(user.getPassword()) ;
-        String sql = "update user set userId = '" + user.getUserId() + "',password = '" + pass +"',phoneNum ='" + user.getPhoneNum() + "' where mail = '" + user.getMail() + "'";
+        String sql = "update user set mail = '" + user.getMail() + "',password = '" + pass +"',phoneNum ='" + user.getPhoneNum() + "' where userId = '" + user.getUserId() + "'";
         jdbcTemplate.execute(sql);
     }
 }

@@ -40,7 +40,7 @@ public class ChangeInfoController {
         Message msg = new Message();
         if (list != null) {
             msg.setCode("warning");
-            msg.setMsg("ユーザー名は重複しています！");
+            msg.setMsg("メールは重複しています！");
             return JSON.toJSONString(msg);
         }else {
             msg.setCode("success");
@@ -49,4 +49,22 @@ public class ChangeInfoController {
             return JSON.toJSONString(msg);
         }
     }
+    @PostMapping("/changePass")
+    public String changePass(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
+        // 获取JSON数据
+        BufferedReader streamReader = new BufferedReader( new InputStreamReader(req.getInputStream(), "UTF-8"));
+        StringBuilder responseStrBuilder = new StringBuilder();
+        String inputStr;
+        while ((inputStr = streamReader.readLine()) != null) {
+            responseStrBuilder.append(inputStr);
+        }
+        User user = JSON.parseObject(responseStrBuilder.toString(), User.class);
+
+        Message msg = new Message();
+        msg.setCode("success");
+        msg.setMsg("パスワードが変更しました");
+        changeService.changePass(user);
+        return JSON.toJSONString(msg);
+        }
+
 }

@@ -15,7 +15,24 @@ public class LoginServiceImpl implements ILoginService {
     @Autowired
     public JdbcTemplate jdbcTemplate;
     @Override
-    public User getUserInfo(User user){
+    public List<User> getAllUserInfo(){
+        String sql = "select * from user";
+        User user1 = new User();
+        List<User> userList = jdbcTemplate.query(sql, new Object[]{}, new BeanPropertyRowMapper<User>(User.class));
+        return  userList;
+    }
+    public List<User> getUserInfo(User user){
+        String sql = "select * from user where userId = '"  + user.getUserId() +"'";
+        User user1 = new User();
+        List<User> userList = jdbcTemplate.query(sql, new Object[]{}, new BeanPropertyRowMapper<User>(User.class));
+//        if(null!= userList && userList.size()>0){
+//            user1 = userList.get(0);
+//            return user1;
+//        }
+        return  userList;
+    }
+
+    public User confirmUserInfo(User user){
         String pass= Util.code(user.getPassword()) ;
         String sql = "select * from user where userId = '"  + user.getUserId() + "' and password ='" + pass + "'";
         User user1 = new User();

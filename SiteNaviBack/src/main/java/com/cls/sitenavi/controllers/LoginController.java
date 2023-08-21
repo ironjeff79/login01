@@ -13,6 +13,8 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.List;
+
 @CrossOrigin(origins = "http://localhost:8081")
 @RestController
 public class LoginController {
@@ -32,7 +34,7 @@ public class LoginController {
             responseStrBuilder.append(inputStr);
         }
         User user = JSON.parseObject(responseStrBuilder.toString(), User.class);
-        User list = loginService.getUserInfo(user);
+        User list = loginService.confirmUserInfo(user);
         Message msg = new Message();
 
         if (list != null) {
@@ -41,8 +43,6 @@ public class LoginController {
             HttpSession session = req.getSession();
             session.setAttribute("user",list);
             User user1 = (User) session.getAttribute("user");
-            System.out.println("user1");
-            System.out.println(user1);
             msg.setUser(list);
             session.setMaxInactiveInterval(60);
             return JSON.toJSONString(msg);
@@ -66,4 +66,54 @@ public class LoginController {
         User list = loginService.getMail(user);
         return JSON.toJSONString(list);
     }
+    @PostMapping("/Search")
+    public String Search(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
+        // 获取JSON数据
+        BufferedReader streamReader = new BufferedReader( new InputStreamReader(req.getInputStream(), "UTF-8"));
+        StringBuilder responseStrBuilder = new StringBuilder();
+        String inputStr;
+        while ((inputStr = streamReader.readLine()) != null) {
+            responseStrBuilder.append(inputStr);
+        }
+        User user = JSON.parseObject(responseStrBuilder.toString(), User.class);
+        List<User> list = loginService.getUserInfo(user);
+        Message msg = new Message();
+
+        if (list != null) {
+            msg.setCode("success");
+            msg.setMsg("成功しました！");
+            HttpSession session = req.getSession();
+            session.setAttribute("user",list);
+            List<User> user1 = (List<User>) session.getAttribute("user");
+            msg.setUserList(list);
+            session.setMaxInactiveInterval(60);
+            return JSON.toJSONString(msg);
+        } else {
+            msg.setCode("warning");
+            msg.setMsg("ユーザーが見つかりませんでした！");
+            return JSON.toJSONString(msg);
+        }
+    }
+    @PostMapping("/SearchAll")
+    public String SearchAll(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
+        // 获取JSON数据
+//        BufferedReader streamReader = new BufferedReader( new InputStreamReader(req.getInputStream(), "UTF-8"));
+//        StringBuilder responseStrBuilder = new StringBuilder();
+//        String inputStr;
+//        while ((inputStr = streamReader.readLine()) != null) {
+//            responseStrBuilder.append(inputStr);
+//        }
+//        User user = JSON.parseObject(responseStrBuilder.toString(), User.class);
+        List<User> list = loginService.getAllUserInfo();
+        Message msg = new Message();
+            msg.setCode("success");
+            msg.setMsg("成功しました！");
+            HttpSession session = req.getSession();
+            session.setAttribute("user",list);
+            List<User> user1 = (List<User>) session.getAttribute("user");
+            msg.setUserList(list);
+            session.setMaxInactiveInterval(60);
+            return JSON.toJSONString(msg);
+
+}
 }
