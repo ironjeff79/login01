@@ -1,21 +1,12 @@
 <template>
     <div class="layout">
       <el-form :model="ruleForm" status-icon :rules="rules" ref="ruleForm" label-width="100px" style="max-width: 400px">
-        <el-form-item label="メール" prop="mail" >
-          <span style="color:rgb(255, 255, 255);display: inline;">*</span>
-          <el-input style="display: inline;width:280px" type="text" v-model="ruleForm.mail"  :disabled = "true" >
-            clearable></el-input>
-        </el-form-item>
         <el-form-item label="ユーザー名" prop="userId">
           <span style="color:rgb(255, 255, 255);display: inline;">*</span>
-          <el-input style="display: inline;width:280px" type="text" v-model="ruleForm.userId"  >
-            clearable></el-input>
+          <el-input style="display: inline;width:280px" type="text" v-model="ruleForm.userId"  :disabled = "true" clearable >
+            </el-input>
         </el-form-item>
-        <el-form-item label="携帯電話" prop="phoneNum">
-        <span style="color:rgb(255, 255, 255);display: inline;">*</span>
-        <el-input style="display: inline;width:280px" type="phoneNum" v-model="ruleForm.phoneNum" autocomplete="off"
-          clearable></el-input>
-      </el-form-item>
+        
         <el-form-item label="パスワード" prop="pass">
           <span style="color:red;display: inline;">*</span>
           <el-input style="display: inline;width:280px" type="password" v-model="ruleForm.pass" autocomplete="off"
@@ -48,7 +39,7 @@
         ruleForm: {
           pass: '',
           checkPass: '',
-          newUserId: '',
+          userId: '',
         },
       rules: {
       }
@@ -93,7 +84,7 @@
           };
           axios({
             method: 'post',
-            url: 'http://localhost:8080/changeInfo',
+            url: 'http://localhost:8080/changePass',
             headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
             data: JSON.stringify(this.data2)
           })
@@ -118,7 +109,8 @@
     },
     created() {
       this.ruleForm.mail = this.$route.query.mail;
-      this.ruleForm.userId = this.$route.query.userId;
+    this.ruleForm.userId = this.$route.query.userId;
+    this.ruleForm.phoneNum = this.$route.query.phoneNum;
     }
   }
   </script>

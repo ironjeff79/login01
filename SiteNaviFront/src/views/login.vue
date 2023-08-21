@@ -56,10 +56,6 @@ export default {
           .then((response) => {
             var data3 = response.data;
             if (data3.code == "success") {
-              // console.log("response.data");
-              // console.log(response.data);
-              // localStorage.setItem("token",response.data.user)
-              // console.log(localStorage.getItem("token"));
               location.href = "/login?userId=" + this.ruleForm.userId;
               // console.log(localStorage.getItem);
             }

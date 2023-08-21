@@ -1,9 +1,13 @@
-import { createRouter, createWebHistory } from 'vue-router'
+import { createRouter, createWebHistory } from 'vue-router';
+
 
 const login = () => import('@/views/login.vue')
 const portal = () => import('@/views/portal.vue')
 const register = () => import('@/views/register.vue')
 const changePass = () => import('@/views/changePass.vue')
+const changeInfo = () => import('@/views/changeInfo.vue')
+const admin =() => import('@/admin.vue')
+const usermanage = () => import('@/admin/usermanage.vue')
 
 const router = createRouter({
   history: createWebHistory(),
@@ -27,6 +31,22 @@ const router = createRouter({
       name: 'changePass',
       component: changePass,
       query:undefined
+    },
+    {
+      path: '/changeInfo/',
+      name: 'changeInfo',
+      component: changeInfo,
+      query:undefined
+    },
+    {
+      path: '/admin',
+      name: 'admin',
+      component: admin,
+      children: [
+        { path: 'usermanage', component: usermanage },
+    //     { path: 'webmanage', component: webmanage },
+    //     { path: 'commentmanage', component: commentmanage },
+      ]
     }
   ]
 })
