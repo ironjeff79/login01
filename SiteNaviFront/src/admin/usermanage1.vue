@@ -72,141 +72,141 @@
     </el-dialog> -->
   </template>
   <script >
-  // import { computed, onMounted, ref } from 'vue';
-  // import axios from 'axios';
+  import { computed, onMounted, ref } from 'vue';
+  import axios from 'axios';
   
-  // interface User {
-  //   username: string;
-  //   email: string;
-  //   phone: string;
-  //   status: number;
-  //   deleted: number;
-  // }
+  interface User {
+    username: string;
+    email: string;
+    phone: string;
+    status: number;
+    deleted: number;
+  }
   
-  // export default {
-  //   setup() {
-  //     const search = ref('');
-  //     const tableData = ref<User[]>([]);
-  //     const editFormVisible = ref(false); // 控制编辑弹窗的显示隐藏
-  //     const deleteFormVisible = ref(false); // 控制删除对话框的显示隐藏
-  //     const editForm = ref<User>({
-  //       username: '',
-  //       email: '',
-  //       phone: '',
-  //       status: 0,
-  //       deleted: 0
-  //     }); // 当前编辑的用户信息
-  //     let oldUsername = ''; // 老的用户名
+  export default {
+    setup() {
+      const search = ref('');
+      const tableData = ref<User[]>([]);
+      const editFormVisible = ref(false); // 控制编辑弹窗的显示隐藏
+      const deleteFormVisible = ref(false); // 控制删除对话框的显示隐藏
+      const editForm = ref<User>({
+        username: '',
+        email: '',
+        phone: '',
+        status: 0,
+        deleted: 0
+      }); // 当前编辑的用户信息
+      let oldUsername = ''; // 老的用户名
   
-  //     const filterTableData = computed(() =>
-  //       tableData.value.filter(
-  //         (data) =>
-  //           !search.value ||
-  //           data.username.toLowerCase().includes(search.value.toLowerCase())
-  //       )
-  //     );
+      const filterTableData = computed(() =>
+        tableData.value.filter(
+          (data) =>
+            !search.value ||
+            data.username.toLowerCase().includes(search.value.toLowerCase())
+        )
+      );
   
-  //     const handleEdit = (index: number, row: User) => {
-  //       editForm.value = { ...row }; // 将当前行数据复制到编辑表单中
-  //       oldUsername = row.username; // 获取老的用户名
-  //       editFormVisible.value = true; // 显示编辑弹窗
-  //     };
+      const handleEdit = (index: number, row: User) => {
+        editForm.value = { ...row }; // 将当前行数据复制到编辑表单中
+        oldUsername = row.username; // 获取老的用户名
+        editFormVisible.value = true; // 显示编辑弹窗
+      };
   
-  //     const confirmDelete = () => {
-  //       // 发送请求将用户的删除状态转变为已删除
-  //       axios.post(`/user/delete/${oldUsername}`)
-  //         .then(response => {
-  //           console.log('Delete success:', response.data);
-  //           // 更新tableData中对应行的数据
-  //           const deletedUserIndex = tableData.value.findIndex(user => user.username === oldUsername);
-  //           if (deletedUserIndex !== -1) {
-  //             // 更新对应行的deleted属性为 1（已删除）
-  //             tableData.value[deletedUserIndex].deleted = 1;
-  //           }
-  //           // 隐藏删除对话框
-  //           deleteFormVisible.value = false;
-  //         })
-  //         .catch(error => {
-  //           console.error('Error:', error);
-  //         });
-  //     };
+      const confirmDelete = () => {
+        // 发送请求将用户的删除状态转变为已删除
+        axios.post(`/user/delete/${oldUsername}`)
+          .then(response => {
+            console.log('Delete success:', response.data);
+            // 更新tableData中对应行的数据
+            const deletedUserIndex = tableData.value.findIndex(user => user.username === oldUsername);
+            if (deletedUserIndex !== -1) {
+              // 更新对应行的deleted属性为 1（已删除）
+              tableData.value[deletedUserIndex].deleted = 1;
+            }
+            // 隐藏删除对话框
+            deleteFormVisible.value = false;
+          })
+          .catch(error => {
+            console.error('Error:', error);
+          });
+      };
   
-  //     const handleDelete = (index: number, row: User) => {
-  //       editForm.value = { ...row }; // 将当前行数据复制到编辑表单中
-  //       oldUsername = row.username; // 获取老的用户名
-  //       deleteFormVisible.value = true; // 显示删除对话框
-  //     };
+      const handleDelete = (index: number, row: User) => {
+        editForm.value = { ...row }; // 将当前行数据复制到编辑表单中
+        oldUsername = row.username; // 获取老的用户名
+        deleteFormVisible.value = true; // 显示删除对话框
+      };
   
-  //     const getStatusButton = (status: number) => {
-  //       return status === 1 ? 'success' : 'warning';
-  //     };
+      const getStatusButton = (status: number) => {
+        return status === 1 ? 'success' : 'warning';
+      };
   
-  //     const getStatusText = (status: number) => {
-  //       return status === 1 ? '已激活' : '未激活';
-  //     };
+      const getStatusText = (status: number) => {
+        return status === 1 ? '已激活' : '未激活';
+      };
   
-  //     const getDeletedButton = (deleted: number) => {
-  //       return deleted === 0 ? 'success' : 'danger';
-  //     };
+      const getDeletedButton = (deleted: number) => {
+        return deleted === 0 ? 'success' : 'danger';
+      };
   
-  //     const getDeletedText = (deleted: number) => {
-  //       return deleted === 0 ? '正常' : '已删除';
-  //     };
+      const getDeletedText = (deleted: number) => {
+        return deleted === 0 ? '正常' : '已删除';
+      };
   
-  //     const saveEdit = () => {
-  //       // 在这里发送保存编辑后的用户信息的请求
-  //       axios.post(`/user/edit/${oldUsername}`, editForm.value)
-  //         .then(response => {
-  //           // 根据接口返回的结果做处理
-  //           console.log('Edit success:', response.data);
-  //           // 更新tableData中对应行的数据
-  //           const updatedUserIndex = tableData.value.findIndex(user => user.username === oldUsername);
-  //           if (updatedUserIndex !== -1) {
-  //             tableData.value.splice(updatedUserIndex, 1, { ...editForm.value });
-  //           }
-  //           // 隐藏编辑弹窗
-  //           editFormVisible.value = false;
-  //         })
-  //         .catch(error => {
-  //           console.error('Error:', error);
-  //         });
-  //     };
+      const saveEdit = () => {
+        // 在这里发送保存编辑后的用户信息的请求
+        axios.post(`/user/edit/${oldUsername}`, editForm.value)
+          .then(response => {
+            // 根据接口返回的结果做处理
+            console.log('Edit success:', response.data);
+            // 更新tableData中对应行的数据
+            const updatedUserIndex = tableData.value.findIndex(user => user.username === oldUsername);
+            if (updatedUserIndex !== -1) {
+              tableData.value.splice(updatedUserIndex, 1, { ...editForm.value });
+            }
+            // 隐藏编辑弹窗
+            editFormVisible.value = false;
+          })
+          .catch(error => {
+            console.error('Error:', error);
+          });
+      };
   
-  //     onMounted(() => {
-  //       axios.get('/user/all')
-  //         .then(response => {
-  //           const responseData = response.data;
-  //           // 将返回的数据封装为指定格式
-  //           tableData.value = responseData.data.map((item: User) => {
-  //             return {
-  //               username: item.username,
-  //               email: item.email,
-  //               phone: item.phone,
-  //               status: item.status,
-  //               deleted: item.deleted
-  //             };
-  //           });
-  //         })
-  //         .catch(error => {
-  //           console.error('Error:', error);
-  //         });
-  //     });
+      onMounted(() => {
+        axios.get('/user/all')
+          .then(response => {
+            const responseData = response.data;
+            // 将返回的数据封装为指定格式
+            tableData.value = responseData.data.map((item: User) => {
+              return {
+                username: item.username,
+                email: item.email,
+                phone: item.phone,
+                status: item.status,
+                deleted: item.deleted
+              };
+            });
+          })
+          .catch(error => {
+            console.error('Error:', error);
+          });
+      });
   
-  //     return {
-  //       search,
-  //       filterTableData,
-  //       handleEdit,
-  //       handleDelete,
-  //       getStatusButton,
-  //       getStatusText,
-  //       getDeletedButton,
-  //       getDeletedText,
-  //       editFormVisible,
-  //       deleteFormVisible,
-  //       editForm,
-  //       saveEdit,
-  //       confirmDelete
-  //     };
-  //   }
-  // };
+      return {
+        search,
+        filterTableData,
+        handleEdit,
+        handleDelete,
+        getStatusButton,
+        getStatusText,
+        getDeletedButton,
+        getDeletedText,
+        editFormVisible,
+        deleteFormVisible,
+        editForm,
+        saveEdit,
+        confirmDelete
+      };
+    }
+  };
   </script>
