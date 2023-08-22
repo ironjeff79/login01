@@ -35,7 +35,7 @@
                 </el-table-column> -->
             <el-table-column label="操作">
                 <template v-slot="scope">
-                    {{ scope.row.userId}}
+                    {{ scope.row.userId }}
                     <el-tooltip effect="dark" content="編集" placement="top">
                         <el-button size="small" type="primary" :icon="Edit"
                             @click="showEditDialog(scope.row.userId)"></el-button>
@@ -168,18 +168,20 @@ export default {
         showEditDialog(userId) {
             this.editDialogVisible = true
             console.log(userId);
-            this.data6 = { userId: userId };
+            this.data5 = { userId: userId };
             axios({
                 method: 'post',
                 url: 'http://localhost:8080/Search',
                 headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                data: JSON.stringify(data6)
+                data: JSON.stringify(this.data5)
             })
                 .then((response) => {
                     console.log(response.data);
-                    var data3 = response.data;
+                    var data3 = response.data.userList;
+                // 没法一个个值调出来
+                    console.log(data3);
                     if (data3.code == "success") {
-                        //   this.editUserForm.userId = 
+                        console.log(response.data); 
                     }
                     else if (data3.code == "warning") {
                         console.log(data3);
@@ -189,18 +191,19 @@ export default {
 
 
         },
-        editUser() {
+        editUser() {             
+            
             if (this.validForm() == true) {
-                this.data5 = {
+                this.data6 = {
                     userId: this.ruleForm.userId,
                     phoneNum: this.ruleForm.phoneNum,
                     mail: this.ruleForm.mail
                 };
                 axios({
                     method: 'post',
-                    url: 'http://localhost:8080/changeInfo',
+                    url: 'http://localhost:8080/changeAdmin',
                     headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                    data: JSON.stringify(this.data5)
+                    data: JSON.stringify(this.data6)
                 })
                     .then((response) => {
                         var data3 = response.data;
@@ -212,7 +215,7 @@ export default {
                             alert(data3.msg);
                         }
                     })
-                    .catch(function (error) { 
+                    .catch(function (error) {
                         console.log(error);
                     });
             }
