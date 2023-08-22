@@ -96,14 +96,6 @@ public class LoginController {
     }
     @PostMapping("/SearchAll")
     public String SearchAll(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
-        // 获取JSON数据
-//        BufferedReader streamReader = new BufferedReader( new InputStreamReader(req.getInputStream(), "UTF-8"));
-//        StringBuilder responseStrBuilder = new StringBuilder();
-//        String inputStr;
-//        while ((inputStr = streamReader.readLine()) != null) {
-//            responseStrBuilder.append(inputStr);
-//        }
-//        User user = JSON.parseObject(responseStrBuilder.toString(), User.class);
         List<User> list = loginService.getAllUserInfo();
         Message msg = new Message();
             msg.setCode("success");

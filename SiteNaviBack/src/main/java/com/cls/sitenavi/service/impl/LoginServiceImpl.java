@@ -22,13 +22,10 @@ public class LoginServiceImpl implements ILoginService {
         return  userList;
     }
     public List<User> getUserInfo(User user){
-        String sql = "select * from user where userId = '"  + user.getUserId() +"'";
+        String sql = "select * from user where userId like '%"  + user.getUserId() +"%'";
         User user1 = new User();
         List<User> userList = jdbcTemplate.query(sql, new Object[]{}, new BeanPropertyRowMapper<User>(User.class));
-//        if(null!= userList && userList.size()>0){
-//            user1 = userList.get(0);
-//            return user1;
-//        }
+        System.out.println(userList);
         return  userList;
     }
 
