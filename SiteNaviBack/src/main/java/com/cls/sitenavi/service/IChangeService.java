@@ -6,6 +6,8 @@ public interface IChangeService {
     void changeInfo(User user);
     void changePass(User user);
     User getInfo(User user);
+    void deleteUser(User user);
+    void changeAdmin(User user);
 
 }
 

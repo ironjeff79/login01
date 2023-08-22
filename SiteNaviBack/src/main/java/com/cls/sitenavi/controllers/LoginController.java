@@ -66,7 +66,7 @@ public class LoginController {
         User list = loginService.getMail(user);
         return JSON.toJSONString(list);
     }
-    @PostMapping("/Search")
+    @PostMapping("/Search") 
     public String Search(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
         // 获取JSON数据
         BufferedReader streamReader = new BufferedReader( new InputStreamReader(req.getInputStream(), "UTF-8"));
@@ -76,7 +76,10 @@ public class LoginController {
             responseStrBuilder.append(inputStr);
         }
         User user = JSON.parseObject(responseStrBuilder.toString(), User.class);
+        System.out.println("guolaide");
+        System.out.println(user);
         List<User> list = loginService.getUserInfo(user);
+        System.out.println(list);
         Message msg = new Message();
 
         if (list != null) {
