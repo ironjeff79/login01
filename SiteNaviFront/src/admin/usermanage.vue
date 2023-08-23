@@ -22,17 +22,17 @@
             </el-row>
         </el-card>
         <!-- 用户列表区域  -->
-        <el-table :data="userlist" border stripe>
+        <el-table :data="currentPageData" border stripe>
             <el-table-column label="番号" type="index"></el-table-column>
             <el-table-column label="ユーザーID" prop="userId"></el-table-column>
             <el-table-column label="メール" prop="mail"></el-table-column>
             <el-table-column label="携帯電話" prop="phoneNum"></el-table-column>
             <!-- <el-table-column label="役割" prop="userId"></el-table-column> -->
-            <!-- <el-table-column label="状態" prop="mg_state">
-                    <template v-slot="scope">
-                        <el-switch v-model="scope.row.mg_state" />
-                    </template>
-                </el-table-column> -->
+            <el-table-column label="状態" prop="mg_state">
+                <template v-slot="scope">
+                    <el-switch v-model="scope.row.mg_state" />
+                </template>
+            </el-table-column>
             <el-table-column label="操作">
                 <template v-slot="scope">
                     {{ scope.row.userId }}
@@ -50,6 +50,12 @@
                 </template>
             </el-table-column>
         </el-table>
+        <div class="button-container">
+        <el-button size="small" type="primary" value="首页" @click="firstPage" >首页</el-button>
+        <el-button size="small" type="info" value="前のページ" @click="prevPage" >前のページ</el-button>
+        <el-button size="small" type="info" value="次のページ" @click="nextPage" >次のページ</el-button>
+        <el-button size="small" type="primary" value="尾页" @click="lastPage" >尾页</el-button>
+        </div>
         <div>
             <!-- 修改用户的对话框 -->
             <el-dialog title="情報変更" v-model="editDialogVisible" width="50%" @close="editDialogClosed"
@@ -73,12 +79,6 @@
                 </span>
             </el-dialog>
         </div>
-
-
-
-
-
-
     </div>
 </template>
   
@@ -103,21 +103,32 @@ export default {
         return {
 
             data1: {},
-            data2: {},
-            data5: {},
-            data6: {},
-
-            search: "",
-            // 获取用户列表的参数对象
-            queryInfo: {
-                query: '', // 查询参数
-                pagenum: 1, // 当前页码
-                pagesize: 2 // 每页显示条数
-            },
-            // 用户列表
             userlist: [],
+            search: "",
+            List: null,
+            listLoading: true,
+            totalPage: 1, // 统共页数，默认为1
+            currentPage: 1, //当前页数 ，默认为1
+            pageSize: 5, // 每页显示数量
+            currentPageData: [], //当前页显示内容
+            headPage: 1,
+
+
+
+
+
+
+
+            // // 获取用户列表的参数对象
+            // queryInfo: {
+            //     query: '', // 查询参数
+            //     pagenum: 1, // 当前页码
+            //     pagesize: 2 // 每页显示条数
+            // },
+            // 用户列表
+
             // 总数据条数
-            total: 0,
+            // total: 0,
             editDialogVisible: false, //控制修改用户对话框的显示与隐藏
 
             //修改用户的表单数据
@@ -127,31 +138,70 @@ export default {
                 phoneNum: '',
                 pass: ''
             },
-            //修改表单的验证规则对象
-            // editUserFormRules: {
-            //     email: [{ required: true, message: '请输入邮箱', trigger: 'blur' },],
-            //     mobile: [{ required: true, message: '请输入手机号', trigger: 'blur' }]
-            // },   
         };
 
 
     },
 
-
     methods: {
+        getCurrentPageData() {
+            let begin = (this.currentPage - 1) * this.pageSize;
+            let end = this.currentPage * this.pageSize;
+            this.currentPageData = this.userlist.slice(
+                begin,
+                end
+            );
+        },
+
+        prevPage() {
+
+            if (this.currentPage == 1) {
+                return false;
+            } else {
+                this.currentPage--;
+                this.getCurrentPageData();
+            }
+        },
+        // 下一页
+        nextPage() {
+
+            if (this.currentPage == this.totalPage) {
+                return false;
+            } else {
+                this.currentPage++;
+                this.getCurrentPageData();
+            }
+        },
+        //尾页
+        lastPage() {
+
+            if (this.currentPage == this.totalPage) {
+                return false;
+            } else {
+                this.currentPage = this.totalPage;
+                this.getCurrentPageData();
+            }
+
+        },
+        //首页
+        firstPage() {
+            this.currentPage = this.headPage;
+            this.getCurrentPageData();
+        },
+
         validForm() {
-            if (!this.ruleForm.mail) {
+            if (!this.editUserForm.mail) {
                 ElMessage.warning('メールを入力してください');
                 return false;
             }
-            else if (this.ruleForm.mail.match(/^\w+@\w+\.\w+$/i)) {
+            else if (this.editUserForm.mail.match(/^\w+@\w+\.\w+$/i)) {
             } else {
                 ElMessage.warning('有効なメールを入力してください！');
                 return false;
             }
-            if (!this.ruleForm.phoneNum) {
+            if (!this.editUserForm.phoneNum) {
             }
-            else if (!this.ruleForm.phoneNum.match(/^(050|070|080|090)\d{4}\d{4}$/)) {
+            else if (!this.editUserForm.phoneNum.match(/^(050|070|080|090)\d{4}\d{4}$/)) {
                 ElMessage.warning('有効な携帯番号を入力してください');
                 return false;
             } else {
@@ -160,56 +210,47 @@ export default {
         },
 
 
-        //关闭编辑用户的对话框
-        //   editDialogClosed() {
-        //     this.$refs.editUserFormRef.resetFields();
-        // },
-        //展示编辑用户的对话框
+        // 关闭编辑用户的对话框
+        editDialogClosed() {
+            this.$refs.editUserFormRef.resetFields();
+        },
+        // 展示编辑用户的对话框
         showEditDialog(userId) {
             this.editDialogVisible = true
-            console.log(userId);
-            this.data5 = { userId: userId };
+            this.data1 = { userId: userId };
             axios({
                 method: 'post',
-                url: 'http://localhost:8080/Search',
+                url: 'http://localhost:8080/SearchDirect',
                 headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                data: JSON.stringify(this.data5)
+                data: JSON.stringify(this.data1)
             })
                 .then((response) => {
-                    console.log(response.data);
-                    var data3 = response.data.userList;
-                // 没法一个个值调出来
-                    console.log(data3);
-                    if (data3.code == "success") {
-                        console.log(response.data); 
-                    }
-                    else if (data3.code == "warning") {
-                        console.log(data3);
-                        ElMessage.warning(data3.msg);
-                    }
+                    console.log("response.data.user");
+                    console.log(response.data.user);
+                    this.editUserForm = response.data.user;
                 })
 
 
         },
-        editUser() {             
-            
+        editUser() {
             if (this.validForm() == true) {
-                this.data6 = {
-                    userId: this.ruleForm.userId,
-                    phoneNum: this.ruleForm.phoneNum,
-                    mail: this.ruleForm.mail
+                this.data1 = {
+                    userId: this.editUserForm.userId,
+                    phoneNum: this.editUserForm.phoneNum,
+                    mail: this.editUserForm.mail
                 };
                 axios({
                     method: 'post',
                     url: 'http://localhost:8080/changeAdmin',
                     headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                    data: JSON.stringify(this.data6)
+                    data: JSON.stringify(this.data1)
                 })
                     .then((response) => {
                         var data3 = response.data;
                         if (data3.code == "success") {
-                            this.$router.push({ path: '/' });
                             alert(data3.msg);
+                            this.editDialogVisible = false
+                            this.$router.go(0)
                         }
                         else if (data3.code == "warning") {
                             alert(data3.msg);
@@ -258,6 +299,7 @@ export default {
             }
         },
         searchForm() {
+
             this.data1 = {
                 userId: this.search,
             };
@@ -272,6 +314,10 @@ export default {
                     if (data3.code == "success") {
                         console.log(response.data);
                         this.userlist = response.data.userList;
+                        this.listLoading = false
+                        this.totalPage = Math.ceil(this.userlist.length / this.pageSize);
+                        this.totalPage = this.totalPage == 0 ? 1 : this.totalPage;
+                        this.getCurrentPageData();
                         console.log(this.userlist);
                     }
                     else if (data3.code == "warning") {
@@ -283,6 +329,7 @@ export default {
                     console.log(error);
                 });
         },
+
     },
 
     created() {
@@ -297,7 +344,10 @@ export default {
                 if (data3.code == "success") {
                     console.log(response.data);
                     this.userlist = response.data.userList;
-                    console.log(this.userlist);
+                    this.listLoading = false
+                    this.totalPage = Math.ceil(this.userlist.length / this.pageSize);
+                    this.totalPage = this.totalPage == 0 ? 1 : this.totalPage;
+                    this.getCurrentPageData();
                 }
                 else if (data3.code == "warning") {
                     console.log(data3);
@@ -308,10 +358,10 @@ export default {
                 console.log(error);
             });
 
-        // this.editUserForm.mail = this.scope.row.mail;
-        // this.editUserForm.userId = this.scope.row.userId;
-        // this.editUserForm.phoneNum = this.scope.row.phoneNum;
+
     },
+
+
 
 }
 </script>
@@ -325,7 +375,9 @@ body,
     margin: 0;
     padding: 0;
 }
-
+.button-container {
+  text-align: center;
+}
 .el-breadcrumb {
     /* 设置下拉距 */
     margin-bottom: 15px;

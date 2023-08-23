@@ -4,27 +4,27 @@
       <el-form-item label="ユーザー名" prop="userId">
         <span style="color:red;display: inline;">*</span>
         <el-input style="display: inline;width:280px" type="username" v-model="ruleForm.userId" autocomplete="off"
-          clearable></el-input>
+          clearable @keyup.enter="registerForm"></el-input>
       </el-form-item>
       <el-form-item label="メール" prop="mail">
         <span style="color:red;display: inline;">*</span>
         <el-input style="display: inline;width:280px" type="mail" v-model="ruleForm.mail" autocomplete="off"
-          clearable></el-input>
+          clearable @keyup.enter="registerForm"></el-input>
       </el-form-item>
       <el-form-item label="携帯電話" prop="phoneNum">
         <span style="color:rgb(255, 255, 255);display: inline;">*</span>
         <el-input style="display: inline;width:280px" type="phoneNum" v-model="ruleForm.phoneNum" autocomplete="off"
-          clearable></el-input>
+          clearable @keyup.enter="registerForm"></el-input>
       </el-form-item>
       <el-form-item label="パスワード" prop="pass">
         <span style="color:red;display: inline;">*</span>
         <el-input style="display: inline;width:280px" type="password" v-model="ruleForm.pass" autocomplete="off"
-          show-password></el-input>
+          show-password @keyup.enter="registerForm"></el-input>
       </el-form-item>
       <el-form-item label="再入力" prop="checkPass">
         <span style="color:red;display: inline;">*</span>
         <el-input style="display: inline;width:280px" type="password" v-model="ruleForm.checkPass" autocomplete="off"
-          show-password></el-input>
+          show-password @keyup.enter="registerForm"></el-input>
       </el-form-item>
       <el-form-item>
         <el-button type="info" @click="registerForm('ruleForm')">アカウント登録</el-button>

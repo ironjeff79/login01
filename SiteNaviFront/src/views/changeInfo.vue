@@ -8,13 +8,13 @@
       </el-form-item>
       <el-form-item label="メール" prop="mail">
         <span style="color:rgb(255, 255, 255);display: inline;">*</span>
-        <el-input style="display: inline;width:280px" type="text" v-model="ruleForm.mail" clearable >
+        <el-input style="display: inline;width:280px" type="text" v-model="ruleForm.mail " clearable @keyup.enter="registerForm">
           </el-input>
       </el-form-item>
       <el-form-item label="携帯電話" prop="phoneNum">
         <span style="color:rgb(255, 255, 255);display: inline;">*</span>
         <el-input style="display: inline;width:280px" type="phoneNum" v-model="ruleForm.phoneNum" autocomplete="off"
-          clearable></el-input>
+          clearable @keyup.enter="registerForm"></el-input>
       </el-form-item>
       <el-form-item>
         <el-button type="primary" @click="registerForm('ruleForm')">変更</el-button>

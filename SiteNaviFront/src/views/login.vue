@@ -1,10 +1,12 @@
 <template>
   <el-form :model="ruleForm" status-icon :rules="rules" ref="ruleForm" label-width="190px" class="demo-ruleForm">
     <el-form-item label="ユーザー名" prop="userId">
-      <el-input type="username" v-model="ruleForm.userId" autocomplete="off" clearable></el-input>
+      <el-input type="username" v-model="ruleForm.userId" autocomplete="off" clearable
+        @keyup.enter="submitForm"></el-input>
     </el-form-item>
     <el-form-item label="パスワード" prop="pass">
-      <el-input type="password" v-model="ruleForm.pass" autocomplete="off" show-password></el-input>
+      <el-input type="password" v-model="ruleForm.pass" autocomplete="off" show-password
+        @keyup.enter="submitForm"></el-input>
     </el-form-item>
     <el-form-item>
       <el-button type="primary" @click="submitForm('ruleForm')">ログイン</el-button>
@@ -14,8 +16,8 @@
 </template>
 <script>
 
-import axios, {} from 'axios'
-import { ElMessage} from 'element-plus'
+import axios, { } from 'axios'
+import { ElMessage } from 'element-plus'
 export default {
   data() {
     return {
@@ -25,8 +27,7 @@ export default {
         checkPass: '',
         userId: '',
       },
-      rules: {
-      }
+      rules: {}
     };
   },
   methods: {
@@ -51,7 +52,7 @@ export default {
         axios({
           method: 'post',
           url: 'http://localhost:8080/login',
-          headers: { 'Content-Type': 'application/x-www-form-urlencoded'},
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
           data: JSON.stringify(this.data1)
         })
           .then((response) => {
@@ -65,15 +66,15 @@ export default {
               ElMessage.warning(data3.msg);
             }
           })
-          .catch(function (error) { // 请求失败处理
+          .catch(function (error) { 
             console.log(error);
           });
       } else {
         return false;
       }
-    }, 
+    },
     registerForm() {
-      this.$router.push({ path: '/register'});
+      this.$router.push({ path: '/register' });
     }
   }
 }

@@ -3,19 +3,19 @@
       <el-form :model="ruleForm" status-icon :rules="rules" ref="ruleForm" label-width="100px" style="max-width: 400px">
         <el-form-item label="ユーザー名" prop="userId">
           <span style="color:rgb(255, 255, 255);display: inline;">*</span>
-          <el-input style="display: inline;width:280px" type="text" v-model="ruleForm.userId"  :disabled = "true" clearable >
+          <el-input style="display: inline;width:280px" type="text" v-model="ruleForm.userId"  :disabled = "true" clearable @keyup.enter="registerForm">
             </el-input>
         </el-form-item>
         
         <el-form-item label="パスワード" prop="pass">
           <span style="color:red;display: inline;">*</span>
           <el-input style="display: inline;width:280px" type="password" v-model="ruleForm.pass" autocomplete="off"
-            show-password></el-input>
+            show-password @keyup.enter="registerForm"></el-input>
         </el-form-item>
         <el-form-item label="再入力" prop="checkPass">
           <span style="color:red;display: inline;">*</span>
           <el-input style="display: inline;width:280px" type="password" v-model="ruleForm.checkPass" autocomplete="off"
-            show-password></el-input>
+            show-password @keyup.enter="registerForm"></el-input>
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="registerForm('ruleForm')">変更</el-button>

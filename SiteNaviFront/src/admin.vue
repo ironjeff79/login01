@@ -13,8 +13,8 @@
                 <document />
               </el-icon>
               <span>网页管理</span>
-            </el-menu-item>
-            <el-menu-item index="3" @click="jump('commentmanage')">
+            </el-menu-item> -->
+             <!--<el-menu-item index="3" @click="jump('commentmanage')">
               <el-icon>
                 <setting />
               </el-icon>
