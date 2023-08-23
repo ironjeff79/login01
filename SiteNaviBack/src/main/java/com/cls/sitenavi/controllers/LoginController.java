@@ -76,10 +76,7 @@ public class LoginController {
             responseStrBuilder.append(inputStr);
         }
         User user = JSON.parseObject(responseStrBuilder.toString(), User.class);
-        System.out.println("guolaide");
-        System.out.println(user);
-        List<User> list = loginService.getUserInfo(user);
-        System.out.println(list);
+        List<User> list = loginService.getVagueUserInfo(user);
         Message msg = new Message();
 
         if (list != null) {
@@ -109,6 +106,21 @@ public class LoginController {
             msg.setUserList(list);
             session.setMaxInactiveInterval(60);
             return JSON.toJSONString(msg);
-
 }
+    @PostMapping("/SearchDirect")
+    public String SearchDirectInfo(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
+        BufferedReader streamReader = new BufferedReader( new InputStreamReader(req.getInputStream(), "UTF-8"));
+        StringBuilder responseStrBuilder = new StringBuilder();
+        String inputStr;
+        while ((inputStr = streamReader.readLine()) != null) {
+            responseStrBuilder.append(inputStr);
+        }
+        User user = JSON.parseObject(responseStrBuilder.toString(), User.class);
+        User user2 = loginService.getDirectUserInfo(user);
+        Message msg = new Message();
+        msg.setCode("success");
+        msg.setMsg("成功しました！");
+        msg.setUser(user2);
+        return JSON.toJSONString(msg);
+    }
 }

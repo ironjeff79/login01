@@ -21,12 +21,22 @@ public class LoginServiceImpl implements ILoginService {
         List<User> userList = jdbcTemplate.query(sql, new Object[]{}, new BeanPropertyRowMapper<User>(User.class));
         return  userList;
     }
-    public List<User> getUserInfo(User user){
+    public List<User> getVagueUserInfo(User user){
         String sql = "select * from user where userId like '%"  + user.getUserId() +"%'";
         User user1 = new User();
         List<User> userList = jdbcTemplate.query(sql, new Object[]{}, new BeanPropertyRowMapper<User>(User.class));
         System.out.println(userList);
         return  userList;
+    }
+    public User getDirectUserInfo(User user){
+        String sql = "select * from user where userId = '"  + user.getUserId() +"'";
+        User user1 = new User();
+        List<User> userList = jdbcTemplate.query(sql, new Object[]{}, new BeanPropertyRowMapper<User>(User.class));
+        if (null != userList && userList.size() > 0) {
+            user1 = userList.get(0);
+            return user1;
+        }
+        return null;
     }
 
     public User confirmUserInfo(User user){

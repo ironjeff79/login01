@@ -94,10 +94,23 @@ public class ChangeInfoController {
         User user = JSON.parseObject(responseStrBuilder.toString(), User.class);
         System.out.println("changeAdmin");
         System.out.println(user);
+
+
+
+        User list = changeService.getInfo(user);
         Message msg = new Message();
-        msg.setCode("success");
-        msg.setMsg("ユーザーアカウントが更新しました。");
-        changeService.changeAdmin(user);
-        return JSON.toJSONString(msg);
+        if (list != null) {
+            msg.setCode("warning");
+            msg.setMsg("メールは重複しています！");
+            return JSON.toJSONString(msg);
+        }else {
+            msg.setCode("success");
+            msg.setMsg("ユーザーアカウントが更新しました。");
+            changeService.changeAdmin(user);
+            return JSON.toJSONString(msg);
+        }
+
+
+
     }
 }

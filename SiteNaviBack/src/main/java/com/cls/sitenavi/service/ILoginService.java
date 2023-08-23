@@ -6,7 +6,8 @@ import java.util.List;
 public interface ILoginService {
 
     List<User> getAllUserInfo();
-    List<User> getUserInfo(User user);
+    List<User> getVagueUserInfo(User user);
+    User getDirectUserInfo(User user);
     User confirmUserInfo(User user);
     User getMail(User user);
 }
