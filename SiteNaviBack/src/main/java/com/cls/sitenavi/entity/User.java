@@ -6,6 +6,7 @@ public class User {
     private String mail;
     private String password;
     private String phoneNum;
+    private String state;
     public String getUserId() {
         return userId;
     }

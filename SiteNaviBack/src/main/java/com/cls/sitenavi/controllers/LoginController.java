@@ -1,19 +1,26 @@
 package com.cls.sitenavi.controllers;
 
-import com.alibaba.fastjson.JSON;
-import com.cls.sitenavi.entity.User;
-import com.cls.sitenavi.entity.Message;
-import com.cls.sitenavi.service.ILoginService;
-import jakarta.servlet.http.HttpSession;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
-import javax.servlet.ServletException;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.List;
+
+import javax.servlet.ServletException;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.alibaba.fastjson.JSON;
+import com.cls.sitenavi.entity.Message;
+import com.cls.sitenavi.entity.User;
+import com.cls.sitenavi.service.ILoginService;
+
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 
 @CrossOrigin(origins = "http://localhost:8081")
 @RestController
@@ -36,8 +43,12 @@ public class LoginController {
         User user = JSON.parseObject(responseStrBuilder.toString(), User.class);
         User list = loginService.confirmUserInfo(user);
         Message msg = new Message();
-
         if (list != null) {
+        	if(list.getState().equals("0")) {
+           	 msg.setCode("warning");
+                msg.setMsg("ユーザーが無効化されました！");
+                return JSON.toJSONString(msg);
+           }else {
             msg.setCode("success");
             msg.setMsg("成功しました！");
             HttpSession session = req.getSession();
@@ -46,7 +57,7 @@ public class LoginController {
             msg.setUser(list);
             session.setMaxInactiveInterval(60);
             return JSON.toJSONString(msg);
-        } else {
+        } }else {
             msg.setCode("warning");
             msg.setMsg("正しいIDとパスワードを入力してください");
 

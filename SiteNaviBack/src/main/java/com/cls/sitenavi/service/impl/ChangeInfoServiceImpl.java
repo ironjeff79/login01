@@ -1,14 +1,14 @@
 package com.cls.sitenavi.service.impl;
-import com.cls.common.util.Util;
-import com.cls.sitenavi.entity.User;
-import com.cls.sitenavi.service.IChangeService;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Map;
+import com.cls.common.util.Util;
+import com.cls.sitenavi.entity.User;
+import com.cls.sitenavi.service.IChangeService;
 
 @Service
 public class ChangeInfoServiceImpl implements IChangeService {
@@ -28,6 +28,10 @@ public class ChangeInfoServiceImpl implements IChangeService {
     public void changeInfo(User user){
     String sql = "update user set mail = '" + user.getMail() + "',password = '" + user.getPassword() +"',phoneNum ='" + user.getPhoneNum() + "' where userId = '" + user.getUserId() + "'";
         jdbcTemplate.execute(sql);
+    }
+    public void changeState(User user){
+        String sql = "update user set state = '" + user.getState() + "' where userId = '" + user.getUserId() + "'";
+            jdbcTemplate.execute(sql);
     }
     public void changePass(User user){
         String pass= Util.code(user.getPassword()) ;
