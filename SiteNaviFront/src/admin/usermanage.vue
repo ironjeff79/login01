@@ -30,12 +30,13 @@
             <!-- <el-table-column label="役割" prop="userId"></el-table-column> -->
             <el-table-column label="状態" prop="mg_state">
                 <template v-slot="scope">
-                    <el-switch v-model="scope.row.mg_state" />
+                    <el-switch v-model="scope.row.state" active-color="#13ce66" inactive-color="#ff4949" active-value="1"
+                        inactive-value="0" @change="userManage(scope.row)" />
                 </template>
             </el-table-column>
             <el-table-column label="操作">
                 <template v-slot="scope">
-                    {{ scope.row.userId }}
+                    <!-- {{ scope.row }} -->
                     <el-tooltip effect="dark" content="編集" placement="top">
                         <el-button size="small" type="primary" :icon="Edit"
                             @click="showEditDialog(scope.row.userId)"></el-button>
@@ -43,19 +44,13 @@
                     <el-tooltip effect="dark" content="削除" placement="top">
                         <el-button size="small" type="danger" @click="removeUserById(scope.row.userId)" :icon="Delete" />
                     </el-tooltip>
-                    <el-tooltip effect="dark" content="役割分担" placement="top" :enterable="false">
+                    <!-- <el-tooltip effect="dark" content="役割分担" placement="top" :enterable="false">
                         <el-button size="small" type="warning" :icon="Setting" />
-                    </el-tooltip>
+                    </el-tooltip> -->
 
                 </template>
             </el-table-column>
         </el-table>
-        <div class="button-container">
-        <el-button size="small" type="primary" value="首页" @click="firstPage" >首页</el-button>
-        <el-button size="small" type="info" value="前のページ" @click="prevPage" >前のページ</el-button>
-        <el-button size="small" type="info" value="次のページ" @click="nextPage" >次のページ</el-button>
-        <el-button size="small" type="primary" value="尾页" @click="lastPage" >尾页</el-button>
-        </div>
         <div>
             <!-- 修改用户的对话框 -->
             <el-dialog title="情報変更" v-model="editDialogVisible" width="50%" @close="editDialogClosed"
@@ -101,7 +96,7 @@ export default {
     },
     data() {
         return {
-
+            ONOFFvalue: '0',
             data1: {},
             userlist: [],
             search: "",
@@ -109,26 +104,10 @@ export default {
             listLoading: true,
             totalPage: 1, // 统共页数，默认为1
             currentPage: 1, //当前页数 ，默认为1
-            pageSize: 5, // 每页显示数量
+            pageSize: 10, // 每页显示数量
             currentPageData: [], //当前页显示内容
             headPage: 1,
 
-
-
-
-
-
-
-            // // 获取用户列表的参数对象
-            // queryInfo: {
-            //     query: '', // 查询参数
-            //     pagenum: 1, // 当前页码
-            //     pagesize: 2 // 每页显示条数
-            // },
-            // 用户列表
-
-            // 总数据条数
-            // total: 0,
             editDialogVisible: false, //控制修改用户对话框的显示与隐藏
 
             //修改用户的表单数据
@@ -144,6 +123,68 @@ export default {
     },
 
     methods: {
+        userManage(row) {
+            //从关到开
+            if (row.state == '1') {
+                console.log("true")
+                this.data1 = {
+                    userId: row.userId,
+                    state: row.state
+                };
+                console.log(this.data1)
+                axios({
+                    method: 'post',
+                    url: 'http://localhost:8080/activeState',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    data: JSON.stringify(this.data1)
+                })
+                    .then((response) => {
+                        var data3 = response.data;
+                        if (data3.code == "success") {
+                            alert(data3.msg);
+                            // this.$router.go(0);
+                        }
+                        else if (data3.code == "warning") {
+                            alert(data3.msg);
+                        }
+                    })
+                    .catch(function (error) { // 请求失败处理
+                        console.log(error);
+                    });
+
+            }
+            //从开到关
+            if (row.state == '0') {
+                console.log("false")
+                this.data1 = {
+                    userId: row.userId,
+                    state: row.state
+                };
+                console.log(this.data1)
+                axios({
+                    method: 'post',
+                    url: 'http://localhost:8080/inactiveState',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    data: JSON.stringify(this.data1)
+                })
+                    .then((response) => {
+                        var data3 = response.data;
+                        if (data3.code == "success") {
+                            alert(data3.msg);
+                           
+                        }
+                        else if (data3.code == "warning") {
+                            alert(data3.msg);
+                        }
+                    })
+                    .catch(function (error) { // 请求失败处理
+                        console.log(error);
+                    });
+
+
+            }
+        },
+
         getCurrentPageData() {
             let begin = (this.currentPage - 1) * this.pageSize;
             let end = this.currentPage * this.pageSize;
@@ -152,43 +193,6 @@ export default {
                 end
             );
         },
-
-        prevPage() {
-
-            if (this.currentPage == 1) {
-                return false;
-            } else {
-                this.currentPage--;
-                this.getCurrentPageData();
-            }
-        },
-        // 下一页
-        nextPage() {
-
-            if (this.currentPage == this.totalPage) {
-                return false;
-            } else {
-                this.currentPage++;
-                this.getCurrentPageData();
-            }
-        },
-        //尾页
-        lastPage() {
-
-            if (this.currentPage == this.totalPage) {
-                return false;
-            } else {
-                this.currentPage = this.totalPage;
-                this.getCurrentPageData();
-            }
-
-        },
-        //首页
-        firstPage() {
-            this.currentPage = this.headPage;
-            this.getCurrentPageData();
-        },
-
         validForm() {
             if (!this.editUserForm.mail) {
                 ElMessage.warning('メールを入力してください');
@@ -225,12 +229,8 @@ export default {
                 data: JSON.stringify(this.data1)
             })
                 .then((response) => {
-                    console.log("response.data.user");
-                    console.log(response.data.user);
                     this.editUserForm = response.data.user;
                 })
-
-
         },
         editUser() {
             if (this.validForm() == true) {
@@ -357,12 +357,7 @@ export default {
             .catch(function (error) {
                 console.log(error);
             });
-
-
     },
-
-
-
 }
 </script>
 
@@ -375,9 +370,11 @@ body,
     margin: 0;
     padding: 0;
 }
+
 .button-container {
-  text-align: center;
+    text-align: center;
 }
+
 .el-breadcrumb {
     /* 设置下拉距 */
     margin-bottom: 15px;
@@ -397,4 +394,5 @@ body,
     margin-top: 15px;
     font-size: 12px;
 }
+
 </style>

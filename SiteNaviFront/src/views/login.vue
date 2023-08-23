@@ -76,6 +76,9 @@ export default {
     registerForm() {
       this.$router.push({ path: '/register' });
     }
+  },
+  created() {
+    // console.log(this.$apiBaseUrl);
   }
 }
 

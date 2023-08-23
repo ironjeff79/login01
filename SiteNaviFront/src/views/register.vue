@@ -123,7 +123,7 @@ export default {
               alert(data3.msg);
             }
           })
-          .catch(function (error) { // 请求失败处理
+          .catch(function (error) { 
             console.log(error);
           });
       }

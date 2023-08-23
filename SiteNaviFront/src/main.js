@@ -1,16 +1,18 @@
 import { createApp } from 'vue'
 import App from './App.vue'
 import router from './router/router'
+
+
 // import { API_BASE_URL } from './config';
-// Vue.prototype.$apiBaseUrl = API_BASE_URL;
+// Vue.prototype.global = API_BASE_URL;
 
 /* 引入 ElementPlus */
 import ElementPlus from 'element-plus'
 import 'element-plus/dist/index.css'
-new Vue({
-    render: h => h(App),
-  }).$mount('#app');
+
 const app = createApp(App);
+
+
 
 app.use(router)
 app.use(ElementPlus)
