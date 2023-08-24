@@ -68,6 +68,10 @@ export default {
     },
     registerForm() {
       if (this.validForm() == true) {
+        if (this.ruleForm.mail == this.$route.query.mail &&
+           this.ruleForm.phoneNum == this.$route.query.phoneNum){
+            ElMessage.warning('変更しませんでした');
+           }else{
         this.data2 = {
           userId: this.ruleForm.userId,
           password: this.ruleForm.pass,
@@ -76,24 +80,24 @@ export default {
         };
         axios({
           method: 'post',
-          url: 'http://localhost:8080/changeInfo',
+          url: this.$http +"/changeInfo",
           headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
           data: JSON.stringify(this.data2)
         })
           .then((response) => {
             var data3 = response.data;
             if (data3.code == "success") {
-              this.$router.push({ path: '/' });
+              this.$router.back()
               alert(data3.msg);
             }
             else if (data3.code == "warning") {
               alert(data3.msg);
             }
           })
-          .catch(function (error) { // 请求失败处理
+          .catch(function (error) {
             console.log(error);
           });
-      }
+      }}
     },
     backForm() {
       this.$router.back();

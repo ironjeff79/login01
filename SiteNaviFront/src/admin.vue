@@ -51,8 +51,7 @@
   import { onMounted, ref } from "vue";
   import { Menu as IconMenu, Setting } from "@element-plus/icons-vue";
   import router from './router/router';
-  import { ElMessage } from 'element-plus';
-  
+  import { ElMessage,ElMessageBox} from 'element-plus'
   function jump(url = string) {
     // 跳转到指定路由
     router.push("/admin/" + url);
@@ -60,10 +59,10 @@
   
   function output() {
     // 退出登录，清除 token 并跳转到首页
-    // localStorage.removeItem("token");
-    ElMessage.success("退出成功！")
-    router.push("/");
-  }
+        // localStorage.removeItem("token"),
+        location.href = "/"}
+        
+   
   
   onMounted(() => {
     // 组件挂载后默认跳转到用户管理页面

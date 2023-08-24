@@ -18,6 +18,7 @@
 
 import axios, { } from 'axios'
 import { ElMessage } from 'element-plus'
+
 export default {
   data() {
     return {
@@ -51,7 +52,7 @@ export default {
         };
         axios({
           method: 'post',
-          url: 'http://localhost:8080/login',
+          url: this.$http +"/login",
           headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
           data: JSON.stringify(this.data1)
         })

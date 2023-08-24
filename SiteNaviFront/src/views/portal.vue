@@ -29,14 +29,14 @@ export default {
         };
         axios({
           method: 'post',
-          url: 'http://localhost:8080/portal',
+          url: this.$http +"/portal",
           headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
           data: JSON.stringify(this.data1)
         })
           .then((response) => {
               this.$router.push({name:'changeInfo', query:response.data});
           })
-          .catch(function (error) { // 请求失败处理
+          .catch(function (error) { 
             console.log(error);
           });
     },
@@ -46,14 +46,14 @@ export default {
         };
         axios({
           method: 'post',
-          url: 'http://localhost:8080/portal',
+          url: this.$http +"/portal",
           headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
           data: JSON.stringify(this.data1)
         })
           .then((response) => {
               this.$router.push({name:'changePass', query:response.data});
           })
-          .catch(function (error) { // 请求失败处理
+          .catch(function (error) { 
             console.log(error);
           });
     },
@@ -67,7 +67,8 @@ export default {
   created() {
     this.userId = this.$route.query.userId;
     this.pass = this.$route.query.pass;
-  }
+  },
+
 }
 </script>
 

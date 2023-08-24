@@ -109,7 +109,7 @@ export default {
         };
         axios({
           method: 'post',
-          url: 'http://localhost:8080/register',
+          url: this.$http +"/register",
           headers: { 'Content-Type': 'application/x-www-form-urlencoded'},
           data: JSON.stringify(this.data2)
         })

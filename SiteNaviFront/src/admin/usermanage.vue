@@ -1,7 +1,7 @@
 <template>
     <div>
         <!-- 面包屑导航区域 -->
-        <el-breadcrumb separator-class=ArrowRight>
+        <el-breadcrumb class=ArrowRight>
             <el-breadcrumb-item :to="{ path: '/admin' }">管理システム</el-breadcrumb-item>
             <el-breadcrumb-item>ユーザー管理</el-breadcrumb-item>
         </el-breadcrumb>
@@ -10,7 +10,7 @@
             <el-row :gutter="20">
                 <el-col :span="8">
                     <!-- 搜索与添加区域 -->
-                    <el-input v-model="search" size="small" placeholder="ユーザーIDを入力してください">
+                    <el-input v-model="search" size="small" placeholder="ユーザーIDを入力してください" @keyup.enter="searchForm">
                         <template #append>
                             <el-button type="primary" @click="searchForm('ruleForm')" :icon="Search"></el-button>
                         </template>
@@ -39,26 +39,34 @@
                     <!-- {{ scope.row }} -->
                     <el-tooltip effect="dark" content="編集" placement="top">
                         <el-button size="small" type="primary" :icon="Edit"
-                            @click="showEditDialog(scope.row.userId)"></el-button>
+                            @click="showEditDialog(scope.row.password)"></el-button>
                     </el-tooltip>
                     <el-tooltip effect="dark" content="削除" placement="top">
                         <el-button size="small" type="danger" @click="removeUserById(scope.row.userId)" :icon="Delete" />
                     </el-tooltip>
-                    <!-- <el-tooltip effect="dark" content="役割分担" placement="top" :enterable="false">
-                        <el-button size="small" type="warning" :icon="Setting" />
-                    </el-tooltip> -->
+                    <el-tooltip effect="dark" content="役割分担" placement="top" :enterable="false">
+                        <el-button size="small" type="warning" @click="showEditRole(scope.row.password)" :icon="Setting" />
+
+
+                    </el-tooltip>
 
                 </template>
             </el-table-column>
         </el-table>
+        <div class="button-container">
+            <el-button size="small" type="primary" value="首页" @click="firstPage">トップ</el-button>
+            <el-button size="small" type="info" value="前のページ" @click="prevPage">前のページ</el-button>
+            <el-button size="small" type="info" value="次のページ" @click="nextPage">次のページ</el-button>
+            <el-button size="small" type="primary" value="尾页" @click="lastPage">最後</el-button>
+        </div>
         <div>
             <!-- 修改用户的对话框 -->
             <el-dialog title="情報変更" v-model="editDialogVisible" width="50%" @close="editDialogClosed"
                 :close-on-click-modal='false'>
                 <!-- 内容主体区 -->
-                <el-form :model="editUserForm" :rules="editUserFormRules" ref="editUserFormRef" label-width="70px">
+                <el-form :model="editUserForm" ref="editUserFormRef" label-width="130px">
                     <el-form-item label="ID" prop="userId">
-                        <el-input v-model="editUserForm.userId" disabled></el-input>
+                        <el-input v-model="editUserForm.userId"></el-input>
                     </el-form-item>
                     <el-form-item label="メール" prop="mail">
                         <el-input v-model="editUserForm.mail"></el-input>
@@ -66,11 +74,38 @@
                     <el-form-item label="携帯" prop="phoneNum">
                         <el-input v-model="editUserForm.phoneNum"></el-input>
                     </el-form-item>
+                    <el-form-item label="パスワード" prop="password" class="password">
+                        <el-input v-model="editUserForm.password" disabled></el-input>
+                    </el-form-item>
                 </el-form>
                 <!-- 底部区 -->
                 <span slot="footer" class="dialog-footer">
-                    <el-button @click="editDialogVisible = false">取 消</el-button>
-                    <el-button type="primary" @click="editUser()">确 定</el-button>
+                    <el-button @click="editDialogVisible = false">キャンセル</el-button>
+                    <el-button type="primary" @click="editUser()">確定</el-button>
+                </span>
+            </el-dialog>
+        </div>
+        <div>
+            <el-dialog title="情報変更" v-model="editRoleVisible" width="50%" @close="editDialogClosed"
+                :close-on-click-modal='false'>
+                <el-form :model="editUserForm" ref="editUserFormRef" label-width="30px">
+                    <el-form-item label="ID" prop="userId">
+                        <el-input v-model="editUserForm.userId" disabled></el-input>
+                    </el-form-item>
+                    <el-checkbox-group v-model="checkList">
+                        <el-checkbox label="管理員" />
+                        <el-checkbox label="高級ユーザー" />
+                        <el-checkbox label="一般ユーザー" />
+                    </el-checkbox-group>
+                    <!-- <el-form-item label="Zones" :label-width="formLabelWidth">
+                        <el-select v-model="form" placeholder="Please select a role">
+                            <el-option label="管理員" value="管理員" />
+                            <el-option label="一般ユーザー" value="一般ユーザー" />
+                        </el-select>
+                    </el-form-item>  -->
+                </el-form>
+                <span slot="footer" class="dialog-footer">
+                    <el-button type="primary" @click="editRole()">確定</el-button>
                 </span>
             </el-dialog>
         </div>
@@ -84,8 +119,9 @@ import {
     ElIcon, ElBreadcrumb, ElBreadcrumbItem, ElCard, ElCol, ElTableColumn, ElTable, ElSwitch, ElMessageBox
 } from 'element-plus'
 import { Edit, Setting, Delete, Search } from '@element-plus/icons-vue'
-import { ref } from 'vue'
+import { reactive, ref } from 'vue'
 
+const checkList = ref(['一般ユーザー', '管理員'])
 
 export default {
     setup() {
@@ -102,13 +138,15 @@ export default {
             search: "",
             List: null,
             listLoading: true,
-            totalPage: 1, // 统共页数，默认为1
-            currentPage: 1, //当前页数 ，默认为1
-            pageSize: 10, // 每页显示数量
-            currentPageData: [], //当前页显示内容
+            totalPage: 1,
+            currentPage: 1,
+            pageSize: 6,
+            currentPageData: [],
             headPage: 1,
 
-            editDialogVisible: false, //控制修改用户对话框的显示与隐藏
+            editDialogVisible: false,
+            editRoleVisible: false,
+
 
             //修改用户的表单数据
             editUserForm: {
@@ -123,18 +161,55 @@ export default {
     },
 
     methods: {
+        getCurrentPageData() {
+            let begin = (this.currentPage - 1) * this.pageSize;
+            let end = this.currentPage * this.pageSize;
+            this.currentPageData = this.userlist.slice(
+                begin,
+                end
+            );
+        },
+        prevPage() {
+            if (this.currentPage == 1) {
+                return false;
+            } else {
+                this.currentPage--;
+                this.getCurrentPageData();
+            }
+        },
+        // 下一页
+        nextPage() {
+            if (this.currentPage == this.totalPage) {
+                return false;
+            } else {
+                this.currentPage++;
+                this.getCurrentPageData();
+            }
+        },
+        //尾页
+        lastPage() {
+            if (this.currentPage == this.totalPage) {
+                return false;
+            } else {
+                this.currentPage = this.totalPage;
+                this.getCurrentPageData();
+            }
+        },
+        //首页
+        firstPage() {
+            this.currentPage = this.headPage;
+            this.getCurrentPageData();
+        },
         userManage(row) {
             //从关到开
             if (row.state == '1') {
-                console.log("true")
                 this.data1 = {
                     userId: row.userId,
                     state: row.state
                 };
-                console.log(this.data1)
                 axios({
                     method: 'post',
-                    url: 'http://localhost:8080/activeState',
+                    url: this.$http + "/activeState",
                     headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
                     data: JSON.stringify(this.data1)
                 })
@@ -155,15 +230,13 @@ export default {
             }
             //从开到关
             if (row.state == '0') {
-                console.log("false")
                 this.data1 = {
                     userId: row.userId,
                     state: row.state
                 };
-                console.log(this.data1)
                 axios({
                     method: 'post',
-                    url: 'http://localhost:8080/inactiveState',
+                    url: this.$http + "/inactiveState",
                     headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
                     data: JSON.stringify(this.data1)
                 })
@@ -171,7 +244,7 @@ export default {
                         var data3 = response.data;
                         if (data3.code == "success") {
                             alert(data3.msg);
-                           
+                            // this.$router.go(0);
                         }
                         else if (data3.code == "warning") {
                             alert(data3.msg);
@@ -185,14 +258,6 @@ export default {
             }
         },
 
-        getCurrentPageData() {
-            let begin = (this.currentPage - 1) * this.pageSize;
-            let end = this.currentPage * this.pageSize;
-            this.currentPageData = this.userlist.slice(
-                begin,
-                end
-            );
-        },
         validForm() {
             if (!this.editUserForm.mail) {
                 ElMessage.warning('メールを入力してください');
@@ -219,12 +284,26 @@ export default {
             this.$refs.editUserFormRef.resetFields();
         },
         // 展示编辑用户的对话框
-        showEditDialog(userId) {
+        showEditDialog(password) {
             this.editDialogVisible = true
-            this.data1 = { userId: userId };
+            this.data1 = { password: password };
             axios({
                 method: 'post',
-                url: 'http://localhost:8080/SearchDirect',
+                url: this.$http + "/SearchDirect",
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                data: JSON.stringify(this.data1)
+            })
+                .then((response) => {
+                    this.editUserForm = response.data.user;
+                })
+        },
+        showEditRole(password) {
+            this.editRoleVisible = true
+            console.log("true")
+            this.data1 = { password: password };
+            axios({
+                method: 'post',
+                url: this.$http + "/SearchDirect",
                 headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
                 data: JSON.stringify(this.data1)
             })
@@ -237,11 +316,12 @@ export default {
                 this.data1 = {
                     userId: this.editUserForm.userId,
                     phoneNum: this.editUserForm.phoneNum,
-                    mail: this.editUserForm.mail
+                    mail: this.editUserForm.mail,
+                    password: this.editUserForm.password
                 };
                 axios({
                     method: 'post',
-                    url: 'http://localhost:8080/changeAdmin',
+                    url: this.$http + "/changeAdmin",
                     headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
                     data: JSON.stringify(this.data1)
                 })
@@ -263,7 +343,6 @@ export default {
 
         },
 
-
         async removeUserById(userId) {
             this.data1 = {
                 userId: userId,
@@ -275,24 +354,22 @@ export default {
             }).catch(error => error)
 
             if (confirmResult !== 'confirm') {
-                return this.$message.info('已取消删除')
+                return this.$message.info('削除をキャンセルします')
             } else {
                 axios({
 
                     method: 'post',
-                    url: 'http://localhost:8080/deleteUser',
+                    url: this.$http + "/deleteUser",
                     headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
                     data: JSON.stringify(this.data1)
                 })
                     .then((response) => {
                         var data3 = response.data;
                         if (data3.code == "success") {
-                            console.log(data3);
                             ElMessage.warning(data3.msg);
                             this.$router.go(0)
                         }
                         else if (data3.code == "warning") {
-                            console.log(data3);
                             ElMessage.warning(data3.msg);
                         }
                     })
@@ -305,14 +382,13 @@ export default {
             };
             axios({
                 method: 'post',
-                url: 'http://localhost:8080/Search',
+                url: this.$http + "/Search",
                 headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
                 data: JSON.stringify(this.data1)
             })
                 .then((response) => {
                     var data3 = response.data;
                     if (data3.code == "success") {
-                        console.log(response.data);
                         this.userlist = response.data.userList;
                         this.listLoading = false
                         this.totalPage = Math.ceil(this.userlist.length / this.pageSize);
@@ -321,7 +397,6 @@ export default {
                         console.log(this.userlist);
                     }
                     else if (data3.code == "warning") {
-                        console.log(data3);
                         ElMessage.warning(data3.msg);
                     }
                 })
@@ -329,20 +404,16 @@ export default {
                     console.log(error);
                 });
         },
-
     },
-
     created() {
-
         axios({
             method: 'post',
-            url: 'http://localhost:8080/SearchAll',
+            url: this.$http + "/SearchAll",
             headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
         })
             .then((response) => {
                 var data3 = response.data;
                 if (data3.code == "success") {
-                    console.log(response.data);
                     this.userlist = response.data.userList;
                     this.listLoading = false
                     this.totalPage = Math.ceil(this.userlist.length / this.pageSize);
@@ -350,7 +421,6 @@ export default {
                     this.getCurrentPageData();
                 }
                 else if (data3.code == "warning") {
-                    console.log(data3);
                     ElMessage.warning(data3.msg);
                 }
             })
@@ -358,6 +428,9 @@ export default {
                 console.log(error);
             });
     },
+
+
+
 }
 </script>
 
@@ -373,6 +446,7 @@ body,
 
 .button-container {
     text-align: center;
+    padding-top: 15px
 }
 
 .el-breadcrumb {
@@ -382,8 +456,9 @@ body,
     font-size: 12px;
 }
 
-.dialog-footer button:first-child {
-    margin-right: 10px;
+.dialog-footer {
+    margin: 0 auto;
+
 }
 
 .el-card {
@@ -395,4 +470,17 @@ body,
     font-size: 12px;
 }
 
+.password {
+    width: 10px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    cursor: pointer;
+}
+
+.ArrowRight {
+    padding-top: 15px;
+    padding-left: 8px;
+    text-align: center;
+}
 </style>

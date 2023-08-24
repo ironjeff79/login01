@@ -84,7 +84,7 @@
           };
           axios({
             method: 'post',
-            url: 'http://localhost:8080/changePass',
+            url: this.$http +"/changePass",
             headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
             data: JSON.stringify(this.data2)
           })
@@ -98,7 +98,7 @@
                 alert(data3.msg);
               }
             })
-            .catch(function (error) { // 请求失败处理
+            .catch(function (error) { 
               console.log(error);
             });
         }
