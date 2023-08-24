@@ -1,13 +1,14 @@
 package com.cls.sitenavi.service.impl;
-import com.cls.common.util.Util;
-import com.cls.sitenavi.entity.User;
-import  com.cls.sitenavi.service.ILoginService;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+import com.cls.common.util.Util;
+import com.cls.sitenavi.entity.User;
+import  com.cls.sitenavi.service.ILoginService;
 
 @Service
 public class LoginServiceImpl implements ILoginService {
@@ -29,7 +30,7 @@ public class LoginServiceImpl implements ILoginService {
         return  userList;
     }
     public User getDirectUserInfo(User user){
-        String sql = "select * from user where userId = '"  + user.getUserId() +"'";
+        String sql = "select * from user where password = '"  + user.getPassword() +"'";
         User user1 = new User();
         List<User> userList = jdbcTemplate.query(sql, new Object[]{}, new BeanPropertyRowMapper<User>(User.class));
         if (null != userList && userList.size() > 0) {

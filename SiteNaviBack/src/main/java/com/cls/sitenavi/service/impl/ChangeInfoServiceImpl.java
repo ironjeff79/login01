@@ -38,7 +38,7 @@ public class ChangeInfoServiceImpl implements IChangeService {
         String sql = "update user set mail = '" + user.getMail() + "',password = '" + pass +"',phoneNum ='" + user.getPhoneNum() + "' where userId = '" + user.getUserId() + "'";
         jdbcTemplate.execute(sql);
     }  public void changeAdmin(User user){
-        String sql = "update user set mail = '" + user.getMail() + "',phoneNum ='" + user.getPhoneNum() + "' where userId = '" + user.getUserId() + "'";
+        String sql = "update user set mail = '" + user.getMail() + "',userId = '" + user.getUserId() +"',phoneNum ='" + user.getPhoneNum() + "' where password = '" + user.getPassword() + "'";
         jdbcTemplate.execute(sql);
     }
     public void deleteUser(User user){

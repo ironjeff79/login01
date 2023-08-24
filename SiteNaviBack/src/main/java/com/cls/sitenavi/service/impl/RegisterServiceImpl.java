@@ -1,13 +1,14 @@
 package com.cls.sitenavi.service.impl;
-import com.cls.common.util.Util;
-import com.cls.sitenavi.entity.User;
-import com.cls.sitenavi.service.IRegisterService;
+import java.util.List;
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Map;
+import com.cls.common.util.Util;
+import com.cls.sitenavi.entity.User;
+import com.cls.sitenavi.service.IRegisterService;
 
 @Service
 public class RegisterServiceImpl implements IRegisterService {
@@ -26,8 +27,8 @@ public class RegisterServiceImpl implements IRegisterService {
     }
     public void insertUserInfo(User user){
         String pass= Util.code(user.getPassword()) ;
-        String sql = "insert into user (userId,mail,phoneNum,password) values ('" + user.getUserId() + "'"
-                + ",'" + user.getMail() + "'" + ",'" + user.getPhoneNum() + "'" + ",'" + pass + "')";
+        String sql = "insert into user (userId,mail,phoneNum,password,state) values ('" + user.getUserId() + "'"
+                + ",'" + user.getMail() + "'" + ",'" + user.getPhoneNum() + "'" + ",'" + pass + "','1')";
         jdbcTemplate.execute(sql);
     }
 }
