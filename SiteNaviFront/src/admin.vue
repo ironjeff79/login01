@@ -2,24 +2,24 @@
     <el-container class="layout-container-demo" style="height: 100%">
       <el-aside width="200px">
         <el-scrollbar>
-          <h5 style="text-align: center;">管理システム</h5>
+          <h4 style="text-align: center;">管理システム</h4>
           <el-menu class="el-menu-vertical-demo">
             <el-menu-item index="1" @click="jump('usermanage')">
               <el-icon><icon-menu /></el-icon>
               <span>ユーザー管理</span>
             </el-menu-item>
-            <!-- <el-menu-item index="2" @click="jump('webmanage')">
+             <el-menu-item index="2" @click="jump('webmanage')">
               <el-icon>
                 <document />
               </el-icon>
               <span>网页管理</span>
-            </el-menu-item> -->
-             <!--<el-menu-item index="3" @click="jump('commentmanage')">
-              <el-icon>
+            </el-menu-item> 
+              <el-menu-item index="3" @click="jump('commentmanage')">
+              <!-- <el-icon>
                 <setting />
-              </el-icon>
-              <span>留言管理</span> 
-            </el-menu-item>-->
+              </el-icon> -->
+              <!-- <span>留言管理</span>  -->
+            </el-menu-item>
           </el-menu>
         </el-scrollbar>
       </el-aside>
@@ -32,6 +32,8 @@
               </el-icon>
               <template #dropdown>
                 <el-dropdown-menu>
+                  <el-dropdown-item @click="changeInfoButton('ruleForm')">個人情報</el-dropdown-item>
+                  <el-dropdown-item @click="changePassButton('ruleForm')">パスワード変更</el-dropdown-item>
                   <el-dropdown-item @click="output()">ログアウト</el-dropdown-item>
                 </el-dropdown-menu>
               </template>
@@ -52,6 +54,8 @@
   import { Menu as IconMenu, Setting } from "@element-plus/icons-vue";
   import router from './router/router';
   import { ElMessage,ElMessageBox} from 'element-plus'
+  import axios, { } from 'axios'
+  
   function jump(url = string) {
     // 跳转到指定路由
     router.push("/admin/" + url);
@@ -63,11 +67,32 @@
         location.href = "/"}
         
    
+function changeInfoButton() {    
+        this.data1 = {
+          userId: this.userId
+        };
+        axios({
+          method: 'post',
+          url: this.$http +"/portal",
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+          data: JSON.stringify(this.data1)
+        })
+          .then((response) => {
+              this.$router.push({name:'changeInfo', query:response.data});
+          })
+          .catch(function (error) { 
+            console.log(error);
+          });
+    }
+
+
+
+
   
   onMounted(() => {
-    // 组件挂载后默认跳转到用户管理页面
     jump("usermanage");
   });
+  
   </script>
   
   <style scoped>

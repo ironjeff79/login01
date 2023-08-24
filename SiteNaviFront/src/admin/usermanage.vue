@@ -66,13 +66,13 @@
                 <!-- 内容主体区 -->
                 <el-form :model="editUserForm" ref="editUserFormRef" label-width="130px">
                     <el-form-item label="ID" prop="userId">
-                        <el-input v-model="editUserForm.userId"></el-input>
+                        <el-input v-model="editUserForm.userId" @keyup.enter="editUser"></el-input>
                     </el-form-item>
                     <el-form-item label="メール" prop="mail">
-                        <el-input v-model="editUserForm.mail"></el-input>
+                        <el-input v-model="editUserForm.mail" @keyup.enter="editUser"></el-input>
                     </el-form-item>
                     <el-form-item label="携帯" prop="phoneNum">
-                        <el-input v-model="editUserForm.phoneNum"></el-input>
+                        <el-input v-model="editUserForm.phoneNum" @keyup.enter="editUser"></el-input>
                     </el-form-item>
                     <el-form-item label="パスワード" prop="password" class="password">
                         <el-input v-model="editUserForm.password" disabled></el-input>
@@ -93,9 +93,9 @@
                         <el-input v-model="editUserForm.userId" disabled></el-input>
                     </el-form-item>
                     <el-checkbox-group v-model="checkList">
-                        <el-checkbox label="管理員" />
-                        <el-checkbox label="高級ユーザー" />
-                        <el-checkbox label="一般ユーザー" />
+                        <el-checkbox label="管理員" checked = "true"/>
+                        <el-checkbox label="高級ユーザー"  checked = "true"/>
+                        <el-checkbox label="一般ユーザー"  checked = "true"/>
                     </el-checkbox-group>
                     <!-- <el-form-item label="Zones" :label-width="formLabelWidth">
                         <el-select v-model="form" placeholder="Please select a role">
@@ -112,7 +112,7 @@
     </div>
 </template>
   
-<script >
+<script>
 import axios, { } from 'axios'
 import {
     ElForm, ElFormItem, ElInput, ElRow, ElMessage, ElContainer, ElHeader, ElAside, ElMain, ElMenu, ElSubmenu, ElMenuItem,
@@ -259,6 +259,15 @@ export default {
         },
 
         validForm() {
+            if (!this.editUserForm.userId) {
+                ElMessage.warning('ユーザー名を入力してください！');
+                return false;
+            }
+            else if (5 > (this.editUserForm.userId.trim().length) || (this.editUserForm.userId.trim().length) > 10) {
+                ElMessage.warning('ユーザー名は5桁から10桁の間に入力してください');
+                return false;
+            } else {
+            }
             if (!this.editUserForm.mail) {
                 ElMessage.warning('メールを入力してください');
                 return false;
@@ -299,7 +308,7 @@ export default {
         },
         showEditRole(password) {
             this.editRoleVisible = true
-            console.log("true")
+        
             this.data1 = { password: password };
             axios({
                 method: 'post',
@@ -317,7 +326,7 @@ export default {
                     userId: this.editUserForm.userId,
                     phoneNum: this.editUserForm.phoneNum,
                     mail: this.editUserForm.mail,
-                    password: this.editUserForm.password
+                    password: this.editUserForm.password,
                 };
                 axios({
                     method: 'post',

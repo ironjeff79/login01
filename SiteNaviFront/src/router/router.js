@@ -8,6 +8,7 @@ const changePass = () => import('@/views/changePass.vue')
 const changeInfo = () => import('@/views/changeInfo.vue')
 const admin =() => import('@/admin.vue')
 const usermanage = () => import('@/admin/usermanage.vue')
+const webmanage = () => import('@/admin/webmanage.vue')
 
 const router = createRouter({
   history: createWebHistory(),
@@ -44,7 +45,7 @@ const router = createRouter({
       component: admin,
       children: [
         { path: 'usermanage', component: usermanage },
-    //     { path: 'webmanage', component: webmanage },
+        { path: 'webmanage', component: webmanage },
     //     { path: 'commentmanage', component: commentmanage },
       ]
     }
