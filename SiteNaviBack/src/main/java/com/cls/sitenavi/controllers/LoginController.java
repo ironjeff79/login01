@@ -86,6 +86,7 @@ public class LoginController {
         while ((inputStr = streamReader.readLine()) != null) {
             responseStrBuilder.append(inputStr);
         }
+        System.out.println(responseStrBuilder.toString());
         User user = JSON.parseObject(responseStrBuilder.toString(), User.class);
         List<User> list = loginService.getVagueUserInfo(user);
         Message msg = new Message();
