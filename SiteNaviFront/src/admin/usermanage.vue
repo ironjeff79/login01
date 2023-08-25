@@ -388,6 +388,8 @@ export default {
 
             this.data1 = {
                 userId: this.search,
+                page:1,
+                pageSize:5,
             };
             axios({
                 method: 'post',
