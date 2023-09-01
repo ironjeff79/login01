@@ -1,5 +1,7 @@
 package com.cls.sitenavi.service.impl;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
@@ -16,19 +18,19 @@ public class LoginServiceImpl implements ILoginService {
     @Autowired
     public JdbcTemplate jdbcTemplate;
     @Override
-    public List<User> getAllUserInfo(){
-        String sql = "select * from user";
-        User user1 = new User();
-        List<User> userList = jdbcTemplate.query(sql, new Object[]{}, new BeanPropertyRowMapper<User>(User.class));
-        return  userList;
-    }
-    public List<User> getVagueUserInfo(User user){
-        String sql = "select * from user where userId like '%"  + user.getUserId() +"%'";
-        User user1 = new User();
-        List<User> userList = jdbcTemplate.query(sql, new Object[]{}, new BeanPropertyRowMapper<User>(User.class));
-        System.out.println(userList);
-        return  userList;
-    }
+//    public List<User> getAllUserInfo(){
+//        String sql = "select * from user";
+//        User user1 = new User();
+//        List<User> userList = jdbcTemplate.query(sql, new Object[]{}, new BeanPropertyRowMapper<User>(User.class));
+//        return  userList;
+//    }
+//    public List<User> getVagueUserInfo(User user){
+//        String sql = "select * from user where userId like '%"  + user.getUserId() +"%'";
+//        User user1 = new User();
+//        List<User> userList = jdbcTemplate.query(sql, new Object[]{}, new BeanPropertyRowMapper<User>(User.class));
+//        System.out.println(userList);
+//        return  userList;
+//    }
     public User getDirectUserInfo(User user){
         String sql = "select * from user where password = '"  + user.getPassword() +"'";
         User user1 = new User();
@@ -60,6 +62,27 @@ public class LoginServiceImpl implements ILoginService {
             return user1;
         }
         return null;
+    }
+    public Map<String,Object> searchPage (Map maps){
+    	
+    	String sqll ="select * from user where userId like '%"  + maps.get("userId") +"%'";
+        List<User> userList = jdbcTemplate.query(sqll, new Object[]{}, new BeanPropertyRowMapper<User>(User.class));
+        Integer pageTotal = 0;
+        Integer pageSize = (Integer)maps.get("pageSize");
+        if (userList.size() % pageSize != 0) {
+        	pageTotal = userList.size() / pageSize + 1;
+        }else {
+        	pageTotal = userList.size() / pageSize;}    	
+    	Object a = ((Integer)maps.get("page") - 1) * pageSize;
+        String sql = "select * from user where userId like '%" + maps.get("userId")  +"%'and id >= (select id from user order by id limit " + a +", 1) limit " + pageSize +"";
+        User user1 = new User();
+        List<User> userList1 = jdbcTemplate.query(sql, new Object[]{}, new BeanPropertyRowMapper<User>(User.class));
+        
+        Map<String,Object>res=new HashMap<>();
+    	
+   	 res.put("totalPage",pageTotal);
+   	 res.put("userList",userList1);
+            return res ;
     }
 }
 

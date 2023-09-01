@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.ServletException;
 
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.cls.sitenavi.entity.Message;
 import com.cls.sitenavi.entity.User;
 import com.cls.sitenavi.service.ILoginService;
@@ -77,48 +79,48 @@ public class LoginController {
         User list = loginService.getMail(user);
         return JSON.toJSONString(list);
     }
-    @PostMapping("/Search") 
-    public String Search(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
-        // 获取JSON数据
-        BufferedReader streamReader = new BufferedReader( new InputStreamReader(req.getInputStream(), "UTF-8"));
-        StringBuilder responseStrBuilder = new StringBuilder();
-        String inputStr;
-        while ((inputStr = streamReader.readLine()) != null) {
-            responseStrBuilder.append(inputStr);
-        }
-        System.out.println(responseStrBuilder.toString());
-        User user = JSON.parseObject(responseStrBuilder.toString(), User.class);
-        List<User> list = loginService.getVagueUserInfo(user);
-        Message msg = new Message();
-
-        if (list != null) {
-            msg.setCode("success");
-            msg.setMsg("成功しました！");
-            HttpSession session = req.getSession();
-            session.setAttribute("user",list);
-            List<User> user1 = (List<User>) session.getAttribute("user");
-            msg.setUserList(list);
-            session.setMaxInactiveInterval(60);
-            return JSON.toJSONString(msg);
-        } else {
-            msg.setCode("warning");
-            msg.setMsg("ユーザーが見つかりませんでした！");
-            return JSON.toJSONString(msg);
-        }
-    }
-    @PostMapping("/SearchAll")
-    public String SearchAll(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
-        List<User> list = loginService.getAllUserInfo();
-        Message msg = new Message();
-            msg.setCode("success");
-            msg.setMsg("成功しました！");
-            HttpSession session = req.getSession();
-            session.setAttribute("user",list);
-            List<User> user1 = (List<User>) session.getAttribute("user");
-            msg.setUserList(list);
-            session.setMaxInactiveInterval(60);
-            return JSON.toJSONString(msg);
-}
+//    @PostMapping("/Search") 
+//    public String Search(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
+//        // 获取JSON数据
+//        BufferedReader streamReader = new BufferedReader( new InputStreamReader(req.getInputStream(), "UTF-8"));
+//        StringBuilder responseStrBuilder = new StringBuilder();
+//        String inputStr;
+//        while ((inputStr = streamReader.readLine()) != null) {
+//            responseStrBuilder.append(inputStr);
+//        }
+//        System.out.println(responseStrBuilder.toString());
+//        User user = JSON.parseObject(responseStrBuilder.toString(), User.class);
+//        List<User> list = loginService.getVagueUserInfo(user);
+//        Message msg = new Message();
+//
+//        if (list != null) {
+//            msg.setCode("success");
+//            msg.setMsg("成功しました！");
+//            HttpSession session = req.getSession();
+//            session.setAttribute("user",list);
+//            List<User> user1 = (List<User>) session.getAttribute("user");
+//            msg.setUserList(list);
+//            session.setMaxInactiveInterval(60);
+//            return JSON.toJSONString(msg);
+//        } else {
+//            msg.setCode("warning");
+//            msg.setMsg("ユーザーが見つかりませんでした！");
+//            return JSON.toJSONString(msg);
+//        }
+//    }
+//    @PostMapping("/SearchAll")
+//    public String SearchAll(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
+//        List<User> list = loginService.getAllUserInfo();
+//        Message msg = new Message();
+//            msg.setCode("success");
+//            msg.setMsg("成功しました！");
+//            HttpSession session = req.getSession();
+//            session.setAttribute("user",list);
+//            List<User> user1 = (List<User>) session.getAttribute("user");
+//            msg.setUserList(list);
+//            session.setMaxInactiveInterval(60);
+//            return JSON.toJSONString(msg);
+//}
     @PostMapping("/SearchDirect")
     public String SearchDirectInfo(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
         BufferedReader streamReader = new BufferedReader( new InputStreamReader(req.getInputStream(), "UTF-8"));
@@ -133,6 +135,25 @@ public class LoginController {
         msg.setCode("success");
         msg.setMsg("成功しました！");
         msg.setUser(user2);
+        return JSON.toJSONString(msg);
+    }
+    
+    @PostMapping("/SearchPage")
+    public String SearchPage(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
+        List<String> param = null;
+    	BufferedReader streamReader = new BufferedReader( new InputStreamReader(req.getInputStream(), "UTF-8"));
+        StringBuilder responseStrBuilder = new StringBuilder();
+        String inputStr;
+        while ((inputStr = streamReader.readLine()) != null) {
+            responseStrBuilder.append(inputStr);
+        }
+        JSONObject jsonObject = JSONObject.parseObject(responseStrBuilder.toString());
+        Map maps = (Map)JSON.parse(responseStrBuilder.toString());        
+        Map<String,Object> a = loginService.searchPage(maps);
+        Message msg = new Message();
+        msg.setCode("success");
+        msg.setMsg("成功しました！");
+        msg.setMaps(a);
         return JSON.toJSONString(msg);
     }
 }

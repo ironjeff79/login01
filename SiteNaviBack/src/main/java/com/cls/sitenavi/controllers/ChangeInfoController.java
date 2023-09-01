@@ -109,7 +109,7 @@ public class ChangeInfoController {
 
 	}
 
-	@PostMapping("/activeState")
+	@PostMapping("/changeState")
 	public String activeState(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
 		// 获取JSON数据
 		BufferedReader streamReader = new BufferedReader(new InputStreamReader(req.getInputStream(), "UTF-8"));
@@ -121,27 +121,16 @@ public class ChangeInfoController {
 		User user = JSON.parseObject(responseStrBuilder.toString(), User.class);
 
 		Message msg = new Message();
-		msg.setCode("success");
-		msg.setMsg("ユーザーが有効化しました。");
 		changeService.changeState(user);
-		return JSON.toJSONString(msg);
-	}
-
-	@PostMapping("/inactiveState")
-	public String inactiveState(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
-		// 获取JSON数据
-		BufferedReader streamReader = new BufferedReader(new InputStreamReader(req.getInputStream(), "UTF-8"));
-		StringBuilder responseStrBuilder = new StringBuilder();
-		String inputStr;
-		while ((inputStr = streamReader.readLine()) != null) {
-			responseStrBuilder.append(inputStr);
+		if( user.getState().equals("1")) {
+			msg.setCode("success");
+			msg.setMsg("ユーザーが有効化しました。");
+			return JSON.toJSONString(msg);
+		}else if( user.getState().equals ("0")) {
+			msg.setCode("success");
+			msg.setMsg("ユーザーが無効化しました。");
+			return JSON.toJSONString(msg);
 		}
-		User user = JSON.parseObject(responseStrBuilder.toString(), User.class);
-
-		Message msg = new Message();
-		msg.setCode("success");
-		msg.setMsg("ユーザーが無効化しました。");
-		changeService.changeState(user);
-		return JSON.toJSONString(msg);
+		return null;
 	}
 }
