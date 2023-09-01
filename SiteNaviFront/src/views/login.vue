@@ -14,8 +14,8 @@
     </el-form-item>
   </el-form>
 </template>
-<script>
 
+<script>
 import axios, { } from 'axios'
 import { ElMessage } from 'element-plus'
 
@@ -75,11 +75,10 @@ export default {
       }
     },
     registerForm() {
-      this.$router.push({ path: '/register' });
+      this.$router.push({ path: '/register'});
     }
   },
   created() {
-    // console.log(this.$apiBaseUrl);
   }
 }
 

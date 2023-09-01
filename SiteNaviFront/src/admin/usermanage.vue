@@ -44,11 +44,9 @@
                     <el-tooltip effect="dark" content="削除" placement="top">
                         <el-button size="small" type="danger" @click="removeUserById(scope.row.userId)" :icon="Delete" />
                     </el-tooltip>
-                    <el-tooltip effect="dark" content="役割分担" placement="top" :enterable="false">
+                    <!-- <el-tooltip effect="dark" content="役割分担" placement="top" :enterable="false">
                         <el-button size="small" type="warning" @click="showEditRole(scope.row.password)" :icon="Setting" />
-
-
-                    </el-tooltip>
+                    </el-tooltip> -->
 
                 </template>
             </el-table-column>
@@ -93,9 +91,9 @@
                         <el-input v-model="editUserForm.userId" disabled></el-input>
                     </el-form-item>
                     <el-checkbox-group v-model="checkList">
-                        <el-checkbox label="管理員" checked = "true"/>
-                        <el-checkbox label="高級ユーザー"  checked = "true"/>
-                        <el-checkbox label="一般ユーザー"  checked = "true"/>
+                        <el-checkbox label="管理員" checked="true" />
+                        <el-checkbox label="高級ユーザー" checked="true" />
+                        <el-checkbox label="一般ユーザー" checked="true" />
                     </el-checkbox-group>
                     <!-- <el-form-item label="Zones" :label-width="formLabelWidth">
                         <el-select v-model="form" placeholder="Please select a role">
@@ -140,9 +138,8 @@ export default {
             listLoading: true,
             totalPage: 1,
             currentPage: 1,
-            pageSize: 6,
             currentPageData: [],
-            headPage: 1,
+            pageSize:3,
 
             editDialogVisible: false,
             editRoleVisible: false,
@@ -161,55 +158,86 @@ export default {
     },
 
     methods: {
-        getCurrentPageData() {
-            let begin = (this.currentPage - 1) * this.pageSize;
-            let end = this.currentPage * this.pageSize;
-            this.currentPageData = this.userlist.slice(
-                begin,
-                end
-            );
+        //ページングのリクエスト
+        getList() {
+            axios({
+                method: 'post',
+                url: this.$http + "/SearchPage",
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                data: JSON.stringify(this.data1)
+            })
+                .then((response) => {
+                    var data3 = response.data;
+                    if (data3.code == "success") {
+                        this.currentPageData = data3.maps.userList;
+                        this.totalPage = data3.maps.totalPage;
+                    }
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
         },
+        //上一页
         prevPage() {
             if (this.currentPage == 1) {
                 return false;
             } else {
                 this.currentPage--;
-                this.getCurrentPageData();
+                this.data1 = {
+                    page: this.currentPage,
+                    userId: this.search,
+                    pageSize:this.pageSize,
+                };
+                this.getList();
             }
         },
         // 下一页
         nextPage() {
             if (this.currentPage == this.totalPage) {
-                return false;
-            } else {
-                this.currentPage++;
-                this.getCurrentPageData();
-            }
+                return false;}else{
+            this.currentPage++;
+            this.data1 = {
+                page: this.currentPage,
+                userId: this.search,
+                pageSize:this.pageSize,
+            };
+            this.getList();}
         },
-        //尾页
+        // //尾页
         lastPage() {
             if (this.currentPage == this.totalPage) {
                 return false;
             } else {
                 this.currentPage = this.totalPage;
-                this.getCurrentPageData();
+                this.data1 = {
+                userId: this.search,
+                page: this.currentPage,
+                pageSize:this.pageSize,
+            };
+            this.getList();
             }
         },
         //首页
         firstPage() {
-            this.currentPage = this.headPage;
-            this.getCurrentPageData();
+            this.currentPage = 1;
+            this.data1 = {
+                userId: this.search,
+                page: this.currentPage,
+                pageSize:this.pageSize,
+            };
+            this.getList();
         },
+
+        //用户激活与否，开关按钮合并
         userManage(row) {
-            //从关到开
-            if (row.state == '1') {
+            {
                 this.data1 = {
                     userId: row.userId,
                     state: row.state
                 };
                 axios({
                     method: 'post',
-                    url: this.$http + "/activeState",
+                    url: this.$http + "/changeState",
                     headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
                     data: JSON.stringify(this.data1)
                 })
@@ -217,44 +245,11 @@ export default {
                         var data3 = response.data;
                         if (data3.code == "success") {
                             alert(data3.msg);
-                            // this.$router.go(0);
-                        }
-                        else if (data3.code == "warning") {
-                            alert(data3.msg);
                         }
                     })
-                    .catch(function (error) { // 请求失败处理
+                    .catch(function (error) {
                         console.log(error);
                     });
-
-            }
-            //从开到关
-            if (row.state == '0') {
-                this.data1 = {
-                    userId: row.userId,
-                    state: row.state
-                };
-                axios({
-                    method: 'post',
-                    url: this.$http + "/inactiveState",
-                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                    data: JSON.stringify(this.data1)
-                })
-                    .then((response) => {
-                        var data3 = response.data;
-                        if (data3.code == "success") {
-                            alert(data3.msg);
-                            // this.$router.go(0);
-                        }
-                        else if (data3.code == "warning") {
-                            alert(data3.msg);
-                        }
-                    })
-                    .catch(function (error) { // 请求失败处理
-                        console.log(error);
-                    });
-
-
             }
         },
 
@@ -287,7 +282,6 @@ export default {
             return true;
         },
 
-
         // 关闭编辑用户的对话框
         editDialogClosed() {
             this.$refs.editUserFormRef.resetFields();
@@ -306,20 +300,20 @@ export default {
                     this.editUserForm = response.data.user;
                 })
         },
-        showEditRole(password) {
-            this.editRoleVisible = true
-        
-            this.data1 = { password: password };
-            axios({
-                method: 'post',
-                url: this.$http + "/SearchDirect",
-                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                data: JSON.stringify(this.data1)
-            })
-                .then((response) => {
-                    this.editUserForm = response.data.user;
-                })
-        },
+        // showEditRole(password) {
+        //     this.editRoleVisible = true
+
+        //     this.data1 = { password: password };
+        //     axios({
+        //         method: 'post',
+        //         url: this.$http + "/SearchDirect",
+        //         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        //         data: JSON.stringify(this.data1)
+        //     })
+        //         .then((response) => {
+        //             this.editUserForm = response.data.user;
+        //         })
+        // },
         editUser() {
             if (this.validForm() == true) {
                 this.data1 = {
@@ -349,7 +343,6 @@ export default {
                         console.log(error);
                     });
             }
-
         },
 
         async removeUserById(userId) {
@@ -361,12 +354,10 @@ export default {
                 cancelButtonText: 'キャンセル',
                 type: 'warning',
             }).catch(error => error)
-
             if (confirmResult !== 'confirm') {
                 return this.$message.info('削除をキャンセルします')
             } else {
                 axios({
-
                     method: 'post',
                     url: this.$http + "/deleteUser",
                     headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
@@ -384,64 +375,24 @@ export default {
                     })
             }
         },
-        searchForm() {
 
+        searchForm() {
             this.data1 = {
                 userId: this.search,
-                page:1,
-                pageSize:5,
+                page: 1,
+                pageSize:this.pageSize,
             };
-            axios({
-                method: 'post',
-                url: this.$http + "/Search",
-                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                data: JSON.stringify(this.data1)
-            })
-                .then((response) => {
-                    var data3 = response.data;
-                    if (data3.code == "success") {
-                        this.userlist = response.data.userList;
-                        this.listLoading = false
-                        this.totalPage = Math.ceil(this.userlist.length / this.pageSize);
-                        this.totalPage = this.totalPage == 0 ? 1 : this.totalPage;
-                        this.getCurrentPageData();
-                        console.log(this.userlist);
-                    }
-                    else if (data3.code == "warning") {
-                        ElMessage.warning(data3.msg);
-                    }
-                })
-                .catch(function (error) { // 请求失败处理
-                    console.log(error);
-                });
+            this.getList();
         },
     },
     created() {
-        axios({
-            method: 'post',
-            url: this.$http + "/SearchAll",
-            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        })
-            .then((response) => {
-                var data3 = response.data;
-                if (data3.code == "success") {
-                    this.userlist = response.data.userList;
-                    this.listLoading = false
-                    this.totalPage = Math.ceil(this.userlist.length / this.pageSize);
-                    this.totalPage = this.totalPage == 0 ? 1 : this.totalPage;
-                    this.getCurrentPageData();
-                }
-                else if (data3.code == "warning") {
-                    ElMessage.warning(data3.msg);
-                }
-            })
-            .catch(function (error) {
-                console.log(error);
-            });
+        this.data1 = {
+            page: this.currentPage,
+            userId: this.search,
+            pageSize:this.pageSize,
+        };
+        this.getList();
     },
-
-
-
 }
 </script>
 

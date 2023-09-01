@@ -8,8 +8,8 @@
       </el-form-item>
       <el-form-item label="メール" prop="mail">
         <span style="color:red;display: inline;">*</span>
-        <el-input style="display: inline;width:280px" type="mail" v-model="ruleForm.mail" autocomplete="off"
-          clearable @keyup.enter="registerForm"></el-input>
+        <el-input style="display: inline;width:280px" type="mail" v-model="ruleForm.mail" autocomplete="off" clearable
+          @keyup.enter="registerForm"></el-input>
       </el-form-item>
       <el-form-item label="携帯電話" prop="phoneNum">
         <span style="color:rgb(255, 255, 255);display: inline;">*</span>
@@ -27,14 +27,15 @@
           show-password @keyup.enter="registerForm"></el-input>
       </el-form-item>
       <el-form-item>
-        <el-button type="info" @click="registerForm('ruleForm')">アカウント登録</el-button>
+        <el-button type="primary" @click="registerForm('ruleForm')">アカウント登録</el-button>
+        <el-button type="info" @click="backForm('ruleForm')">戻る</el-button>
       </el-form-item>
     </el-form>
   </div>
 </template>
 
 <script>
-import axios, {} from 'axios';
+import axios, { } from 'axios';
 import { ElMessage } from 'element-plus';
 
 export default {
@@ -109,8 +110,8 @@ export default {
         };
         axios({
           method: 'post',
-          url: this.$http +"/register",
-          headers: { 'Content-Type': 'application/x-www-form-urlencoded'},
+          url: this.$http + "/register",
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
           data: JSON.stringify(this.data2)
         })
           .then((response) => {
@@ -123,12 +124,17 @@ export default {
               alert(data3.msg);
             }
           })
-          .catch(function (error) { 
+          .catch(function (error) {
             console.log(error);
           });
       }
-    }
+    }, backForm() {
+      this.$router.back();
+
+    },
+
   },
+
   created() {
   },
 }

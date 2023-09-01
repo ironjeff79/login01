@@ -1,6 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router';
 
-
+const index = () => import('@/views/index.vue')
 const login = () => import('@/views/login.vue')
 const portal = () => import('@/views/portal.vue')
 const register = () => import('@/views/register.vue')
@@ -15,6 +15,11 @@ const router = createRouter({
   routes: [
     {
       path: '/',
+      name: 'index',
+      component: index
+    },
+    {
+      path: '/signIn',
       name: 'login',
       component: login
     },
