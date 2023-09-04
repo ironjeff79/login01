@@ -3,6 +3,7 @@ import { createRouter, createWebHistory } from 'vue-router';
 const index = () => import('@/views/index.vue')
 const login = () => import('@/views/login.vue')
 const portal = () => import('@/views/portal.vue')
+const about = () => import('@/views/about.vue')
 const register = () => import('@/views/register.vue')
 const changePass = () => import('@/views/changePass.vue')
 const changeInfo = () => import('@/views/changeInfo.vue')
@@ -22,6 +23,11 @@ const router = createRouter({
       path: '/signIn',
       name: 'login',
       component: login
+    },
+    {
+      path: '/about',
+      name: 'about',
+      component: about
     },
     {
       path: '/login',
