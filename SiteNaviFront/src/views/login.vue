@@ -18,7 +18,7 @@
 <script>
 import axios, { } from 'axios'
 import { ElMessage } from 'element-plus'
-
+import router from '../router/router';
 export default {
   data() {
     return {
@@ -59,8 +59,10 @@ export default {
           .then((response) => {
             var data3 = response.data;
             if (data3.code == "success") {
-              location.href = "/login?userId=" + this.ruleForm.userId;
-              // console.log(localStorage.getItem);
+              // location.href = "/?userId=" + this.ruleForm.userId + "loginState : true";
+              router.push({ path: '/', query: { loginState:"true"　,userId :this.ruleForm.userId } })
+           
+              
             }
             else if (data3.code == "warning") {
               console.log(data3);

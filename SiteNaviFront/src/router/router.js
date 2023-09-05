@@ -7,7 +7,7 @@ const about = () => import('@/views/about.vue')
 const register = () => import('@/views/register.vue')
 const changePass = () => import('@/views/changePass.vue')
 const changeInfo = () => import('@/views/changeInfo.vue')
-const admin =() => import('@/admin.vue')
+const admin = () => import('@/admin.vue')
 const usermanage = () => import('@/admin/usermanage.vue')
 const webmanage = () => import('@/admin/webmanage.vue')
 
@@ -38,17 +38,18 @@ const router = createRouter({
       path: '/register',
       name: 'register',
       component: register
-    },{
+    },
+    {
       path: '/changePass/',
       name: 'changePass',
       component: changePass,
-      query:undefined
+      query: undefined
     },
     {
       path: '/changeInfo/',
       name: 'changeInfo',
       component: changeInfo,
-      query:undefined
+      query: undefined
     },
     {
       path: '/admin',
@@ -57,7 +58,7 @@ const router = createRouter({
       children: [
         { path: 'usermanage', component: usermanage },
         { path: 'webmanage', component: webmanage },
-    //     { path: 'commentmanage', component: commentmanage },
+        //     { path: 'commentmanage', component: commentmanage },
       ]
     }
   ]

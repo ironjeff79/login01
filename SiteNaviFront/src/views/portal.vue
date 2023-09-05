@@ -1,15 +1,37 @@
 <template>
+  <el-header style="text-align: right; font-size: 28px">
+  <div class="toolbar">
+    <el-dropdown>
+      <el-icon style="margin-right: 8px; margin-top: 1px">
+        <setting />
+      </el-icon>
+      <template #dropdown>
+        <el-dropdown-menu>
+          <el-dropdown-item @click="changeInfoButton('ruleForm')">個人情報</el-dropdown-item>
+          <el-dropdown-item @click="changePassButton('ruleForm')">パスワード変更</el-dropdown-item>
+          <el-dropdown-item @click="logOutButton()">ログアウト</el-dropdown-item>
+        </el-dropdown-menu>
+      </template>
+    </el-dropdown>
+    <span>{{ userId }}</span>
+  </div>
+</el-header>
+
+
+  <h1 class="page-title">ホームページ</h1>
+  <div class="userId">
+    このページでは、{{ userId }}様だけのサービスがご利用いただけます。
+  </div>
+
   <div>
-    <li class="userId">
-        {{ userId }}さん！ようこそ 
-      </li>
     <ul class="feedback">
-      <el-button type="warning" style="float:right" class="button1"  @click="UserButton('ruleForm')">ユーザー一覧表</el-button>
-      <el-button type="warning" style="float:right" class="button1"  @click="changeInfoButton('ruleForm')">個人情報</el-button> 
-      <el-button type="warning" style="float:right" class="button1"  @click="changePassButton('ruleForm')">パスワードの変更</el-button>
+      <!-- <el-button type="warning" style="float:middle" class="button1" @click="UserButton('ruleForm')">ユーザー一覧表</el-button> -->
+      <!-- <el-button type="warning" style="float:right" class="button1" @click="changeInfoButton('ruleForm')">個人情報</el-button>
+      <el-button type="warning" style="float:right" class="button1"
+        @click="changePassButton('ruleForm')">パスワードの変更</el-button> -->
     </ul>
-    <el-button type="info" style="float:right" class="button1"  @click="logOutButton('ruleForm')">ログアウト</el-button>
-  </div> 
+    <!-- <el-button type="info" style="float:right" class="button1" @click="logOutButton('ruleForm')">ログアウト</el-button> -->
+  </div>
 </template>
 
 <script>
@@ -23,42 +45,42 @@ export default {
     };
   },
   methods: {
-    changeInfoButton() {    
-        this.data1 = {
-          userId: this.userId
-        };
-        axios({
-          method: 'post',
-          url: this.$http +"/portal",
-          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-          data: JSON.stringify(this.data1)
+    changeInfoButton() {
+      this.data1 = {
+        userId: this.userId
+      };
+      axios({
+        method: 'post',
+        url: this.$http + "/portal",
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        data: JSON.stringify(this.data1)
+      })
+        .then((response) => {
+          this.$router.push({ name: 'changeInfo', query: response.data });
         })
-          .then((response) => {
-              this.$router.push({name:'changeInfo', query:response.data});
-          })
-          .catch(function (error) { 
-            console.log(error);
-          });
+        .catch(function (error) {
+          console.log(error);
+        });
     },
-    changePassButton() {    
-        this.data1 = {
-          userId: this.userId
-        };
-        axios({
-          method: 'post',
-          url: this.$http +"/portal",
-          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-          data: JSON.stringify(this.data1)
+    changePassButton() {
+      this.data1 = {
+        userId: this.userId
+      };
+      axios({
+        method: 'post',
+        url: this.$http + "/portal",
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        data: JSON.stringify(this.data1)
+      })
+        .then((response) => {
+          this.$router.push({ name: 'changePass', query: response.data });
         })
-          .then((response) => {
-              this.$router.push({name:'changePass', query:response.data});
-          })
-          .catch(function (error) { 
-            console.log(error);
-          });
+        .catch(function (error) {
+          console.log(error);
+        });
     },
     UserButton() {
-      this.$router.push({ path: '/admin'});
+      this.$router.push({ path: '/admin' });
     },
     logOutButton() {
       location.href = "/";
@@ -73,6 +95,32 @@ export default {
 </script>
 
 <style scoped>
+.page-title {
+  text-align: center;
+  font-size: 24px;
+  color: #333;
+  margin-bottom: 20px;
+}
+
+.userId {
+  text-align: center;
+  font-size: 30px;
+  color: #666;
+  margin-bottom: 10px;
+}
+
+.toolbar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  right: 50px;
+}
+
+/* .feedback {
+  display: block;
+  margin: 0 auto
+} */
 
 .feedback {
   display: flex;
