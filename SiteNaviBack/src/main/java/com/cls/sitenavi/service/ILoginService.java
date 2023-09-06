@@ -1,6 +1,8 @@
 package com.cls.sitenavi.service;
+import java.util.List;
 import java.util.Map;
 
+import com.cls.sitenavi.entity.Comment;
 import com.cls.sitenavi.entity.User;
 
 public interface ILoginService {
@@ -11,4 +13,6 @@ public interface ILoginService {
     User confirmUserInfo(User user);
     User getMail(User user);
     Map<String,Object> searchPage (Map maps);
+
+    List<Comment> getAllComment (User user);
 }

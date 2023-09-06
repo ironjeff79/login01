@@ -3,6 +3,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.cls.sitenavi.entity.Comment;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -83,6 +84,12 @@ public class LoginServiceImpl implements ILoginService {
    	 res.put("totalPage",pageTotal);
    	 res.put("userList",userList1);
             return res ;
+    }
+
+        public List<Comment> getAllComment(User user){
+        String sql = "select * from comment";
+        List<Comment> comments = jdbcTemplate.query(sql, new Object[]{}, new BeanPropertyRowMapper<Comment>(Comment.class));
+        return  comments ;
     }
 }
 

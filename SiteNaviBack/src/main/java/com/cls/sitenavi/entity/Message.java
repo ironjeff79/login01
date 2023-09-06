@@ -10,6 +10,7 @@ public class Message<T> {
     private String msg;
     private User user;
     private List<User> userList;
+    private List<Comment> comments;
     private String page;
     private Map<String,Object> maps;
     public String getCode() {
