@@ -214,42 +214,41 @@ export default {
       this.dialogFormVisible = true
 
     },
-    saveReply() {
-      if (this.hasLogin === true) {
-        axios.post('/comment/posted', {
-          rate: this.replyComment.rate,
-          content: this.replyComment.content,
-          userId: this.replyComment.user_id,
-          foreignId: this.web.foreignId,
-          pid: this.replyComment.pid,
-          target: this.replyComment.target
-        }, {
-          headers: {
-            'Content-Type': 'application/json;charset=UTF-8'
-          },
-          withCredentials: true
-        }).then(res => {
-          ElMessage.success('评论发布成功')
-          this.$nextTick(() => {
-            this.replyComment.content = ''; // 将content置为空字符串
-          });
-          this.load()
-          this.dialogFormVisible = false
-        })
-          .catch(err => {
-            console.error(err);
-          })
-      } else {
-        ElMessage.error('请先登录再进行评论.')
-      }
-
-    },
+    // saveReply() {
+    //   if (this.hasLogin === true) {
+    //     axios.post('/comment/posted', {
+    //       rate: this.replyComment.rate,
+    //       content: this.replyComment.content,
+    //       userId: this.replyComment.user_id,
+    //       foreignId: this.web.foreignId,
+    //       pid: this.replyComment.pid,
+    //       target: this.replyComment.target
+    //     }, {
+    //       headers: {
+    //         'Content-Type': 'application/json;charset=UTF-8'
+    //       },
+    //       withCredentials: true
+    //     }).then(res => {
+    //       ElMessage.success('评论发布成功')
+    //       this.$nextTick(() => {
+    //         this.replyComment.content = ''; // 将content置为空字符串
+    //       });
+    //       this.load()
+    //       this.dialogFormVisible = false
+    //     })
+    //       .catch(err => {
+    //         console.error(err);
+    //       })
+    //   } else {
+    //     ElMessage.error('请先登录再进行评论.')
+    //   }
+    // },
     submit() {
       if (!this.commentedMessage.content) {
         ElMessage.warning('请进行评论！')
       } else {
         if (this.hasLogin === true) {
-          axios.post('/comment/posted', {
+          axios.post('/commentPosted', {
             rate: this.commentedMessage.rate,
             content: this.commentedMessage.content,
             userId: this.commentedMessage.user_id,

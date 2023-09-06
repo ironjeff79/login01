@@ -120,7 +120,7 @@ import Footer from "../components/Footer.vue";
 import itemsData from "../assets/data.json";
 import { loadJs } from '../assets/js/app.js';
 import Cookies from "js-cookie";
-
+import router from "../router/router";
 
 export default {
   computed: {
@@ -176,7 +176,11 @@ export default {
       location.href = "/signIn";
     },
     infoForm() {
-      location.href = "/login?userId=" + this.userId;
+      if(this.userId === "admin"){
+                router.push("/admin")
+            }
+            else{location.href = "/login?userId=" + this.userId;}
+      
     },
     getInfoFromSon(Web = Object) {
       this.targetWeb = Web;

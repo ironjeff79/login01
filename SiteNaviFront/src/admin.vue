@@ -12,13 +12,13 @@
               <el-icon>
                 <document />
               </el-icon>
-              <span>网页管理</span>
+              <span>ページ管理</span>
             </el-menu-item> 
               <el-menu-item index="3" @click="jump('commentmanage')">
-              <!-- <el-icon>
+              <el-icon>
                 <setting />
-              </el-icon> -->
-              <!-- <span>留言管理</span>  -->
+              </el-icon>
+              <span>コメント管理</span> 
             </el-menu-item>
           </el-menu>
         </el-scrollbar>
@@ -32,13 +32,13 @@
               </el-icon>
               <template #dropdown>
                 <el-dropdown-menu>
-                  <el-dropdown-item @click="changeInfoButton('ruleForm')">個人情報</el-dropdown-item>
-                  <el-dropdown-item @click="changePassButton('ruleForm')">パスワード変更</el-dropdown-item>
+                  <!-- <el-dropdown-item @click="changeInfoButton('ruleForm')">個人情報</el-dropdown-item>
+                  <el-dropdown-item @click="changePassButton('ruleForm')">パスワード変更</el-dropdown-item> -->
                   <el-dropdown-item @click="output()">ログアウト</el-dropdown-item>
                 </el-dropdown-menu>
               </template>
             </el-dropdown>
-            <span>Administrator</span>
+            <span>Admin</span>
           </div>
         </el-header>
   
@@ -57,7 +57,6 @@
   import axios, { } from 'axios'
   
   function jump(url = string) {
-    // 跳转到指定路由
     router.push("/admin/" + url);
   }
   
