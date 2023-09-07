@@ -21,13 +21,15 @@
           <el-icon style="vertical-align: middle">
             <Link />
           </el-icon>
-          <span style="vertical-align: middle"> <div class="url" :href="web?.url" target="_blank">链接直达</div> </span>
+          <span style="vertical-align: middle">
+            <div class="url" :href="web?.url" target="_blank">链接直达</div>
+          </span>
         </el-button>
         <el-button type="warning" style="margin-left: 30px;">
           <el-icon style="vertical-align: middle">
             <Warning />
           </el-icon>
-          <span style="vertical-align: middle" @click="logout" > 反馈 </span>
+          <span style="vertical-align: middle" @click="logout"> 反馈 </span>
         </el-button>
       </div>
     </div>
@@ -73,9 +75,9 @@
               <div v-if="item.children">
                 <div v-for="sub in item.children" :key="sub.commentId">
                   <div style="border-left: 2px dashed #666;padding-left: 20px;">
-                    <b style="cursor: pointer;margin-right: 5px;" @click="reply(sub.pid, sub.userId)">{{
+                    <!-- <b style="cursor: pointer;margin-right: 5px;" @click="reply(sub.pid, sub.userId)">{{
                       sub.currentUsername
-                    }}</b>
+                    }}</b> -->
                     <span>回复 <span style="color: cornflowerblue;">@{{ sub.targetName }}：</span><span
                         style="color: #666;margin-left: 10px;">{{ sub.content }}</span></span>
                     <span style="float: right; color: #868484;">{{ sub.createtime.replace(/T/g, ' ') }}</span>
@@ -123,8 +125,14 @@ export default {
   props: {
     web: Object,
   },
+  computed: {
+    userId() {
+      return this.$route.query.userId;
+    }
+  },
   data() {
     return {
+      data1: {},
       isBack: false,
       value: 0,
       commentedMessage: {
@@ -154,28 +162,28 @@ export default {
   },
   mounted() {
     this.load();
-    mytoken.value = localStorage.getItem("token");
-    axios.get('/user/info', {
-      // headers: {
-      //   Authorization: `Bearer ${token}`
-      // },
-      params: {
-        token: mytoken.value
-      },
-    })
-      .then(response => {
-        // 处理成功响应的数据
-        this.user.id = response.data.data.userId;
-        this.user.name = response.data.data.name;
-        this.user.avatar = response.data.data.avatar;
-        this.replyComment.user_id = this.user.id;
-        this.commentedMessage.user_id = this.user.id;
-        this.hasLogin = true;
-      })
-      .catch(error => {
-        // 处理错误
-        console.error(error);
-      });
+    // mytoken.value = localStorage.getItem("token");
+    // axios.get('/user/info', {
+    //   // headers: {
+    //   //   Authorization: `Bearer ${token}`
+    //   // },
+    //   params: {
+    //     token: mytoken.value
+    //   },
+    // })
+    //   .then(response => {
+    //     // 处理成功响应的数据
+    //     this.user.id = response.data.data.userId;
+    //     this.user.name = response.data.data.name;
+    //     this.user.avatar = response.data.data.avatar;
+    //     this.replyComment.user_id = this.user.id;
+    //     this.commentedMessage.user_id = this.user.id;
+    //     this.hasLogin = true;
+    //   })
+    //   .catch(error => {
+    //     // 处理错误
+    //     console.error(error);
+    //   });
 
 
   },
@@ -188,22 +196,40 @@ export default {
       this.$emit("backFunc", this.isBack);
     },
     load() {
-      axios.get('/comment/info', {
-        params: {
-          foreignId: this.web.foreignId
-        },
-        headers: {
-          'Content-Type': 'application/json;charset=UTF-8'
-        }
+      this.data1 = {
+        foreignId: this.commentedMessage.foreignId
+      };
+      axios({
+        method: 'post',
+        url: this.$http + "/comment",
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        data: JSON.stringify(this.data1)
       })
+        // axios.get('/comment', {
+        //   params: {
+        //     foreignId: this.web.foreignId
+        //   },
+        //   headers: {
+        //     'Content-Type': 'application/json;charset=UTF-8'
+        //   }
+        // })
         .then(res => {
-          if (res.data.code === 20000) {
-            this.value = res.data.data.rate;
-            this.comments = res.data.data.comments;
-            this.$nextTick(() => {
-              this.commentedMessage.content = ''; // 将content置为空字符串
-            });
-          }
+          console.log("res.data");
+          console.log(res.data);
+          // this.user.id = response.data.data.userId;
+          // this.user.name = response.data.data.name;
+          // this.user.avatar = response.data.data.avatar;
+          // this.replyComment.user_id = this.user.id;
+          // this.commentedMessage.user_id = this.user.id;
+          // this.hasLogin = true;
+          // this.value = res.data.data.rate;
+          // this.comments = res.data.comments;
+          console.log("this.comments");
+          console.log(this.comments);
+          this.$nextTick(() => {
+            this.commentedMessage.content = ''; // 将content置为空字符串
+          });
+
         })
         .catch(err => {
           //console.error(err);
@@ -247,32 +273,40 @@ export default {
       if (!this.commentedMessage.content) {
         ElMessage.warning('请进行评论！')
       } else {
-        if (this.hasLogin === true) {
-          axios.post('/commentPosted', {
-            rate: this.commentedMessage.rate,
-            content: this.commentedMessage.content,
-            userId: this.commentedMessage.user_id,
-            foreignId: this.commentedMessage.foreignId
-          }, {
-            headers: {
-              'Content-Type': 'application/json;charset=UTF-8'
-            },
-            withCredentials: true
-          }).then(res => {
+        // if (this.hasLogin === true) {
+        console.log("!!!")
+        console.log(this.commentedMessage.rate, this.commentedMessage.content, this.$route.query.userId, this.commentedMessage.foreignId)
+        this.data1 = {
+          rate: this.commentedMessage.rate,
+          content: this.commentedMessage.content,
+          userId: this.$route.query.userId,
+          foreignId: this.commentedMessage.foreignId
+        };
+        axios({
+          method: 'post',
+          url: this.$http + "/commentPosted",
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+          data: JSON.stringify(this.data1)
+        })
+          .then(res => {
             ElMessage.success('评论发布成功')
             this.load()
           })
-            .catch(err => {
-              console.error(err);
-            })
+          .catch(err => {
+            console.error(err);
+          })
         // } else {
         //   ElMessage.error('请先登录再进行评论.')
-        }
+        // }
       }
 
     }
 
-  }
+  },
+  created() {
+    this.userId = this.$route.query.userId;
+    console.log(this.web)
+  },
 };
 </script>
   

@@ -169,7 +169,6 @@ export default {
                 .then((response) => {
                     var data3 = response.data;
                     if (data3.code == "success") {
-                        console.log(data3);
                         this.currentPageData = data3.maps.userList;
                         this.totalPage = data3.maps.totalPage;
                     }
