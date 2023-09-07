@@ -18,7 +18,6 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.cls.sitenavi.entity.Message;
 import com.cls.sitenavi.entity.User;
-import com.cls.sitenavi.entity.Comment;
 import com.cls.sitenavi.service.ILoginService;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -155,22 +154,6 @@ public class LoginController {
         msg.setCode("success");
         msg.setMsg("成功しました！");
         msg.setMaps(a);
-        return JSON.toJSONString(msg);
-    }
-    @PostMapping("/comment")
-    public String getComment(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
-      BufferedReader streamReader = new BufferedReader( new InputStreamReader(req.getInputStream(), "UTF-8"));
-            StringBuilder responseStrBuilder = new StringBuilder();
-            String inputStr;
-            while ((inputStr = streamReader.readLine()) != null) {
-                responseStrBuilder.append(inputStr);
-            }
-            User user = JSON.parseObject(responseStrBuilder.toString(), User.class);
-        List<Comment> a = loginService.getAllComment(user);
-        Message msg = new Message();
-        msg.setCode("success");
-        msg.setMsg("成功しました！");
-        msg.setComments(a);
         return JSON.toJSONString(msg);
     }
 }

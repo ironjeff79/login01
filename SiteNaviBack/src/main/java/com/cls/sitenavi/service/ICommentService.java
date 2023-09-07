@@ -1,15 +1,13 @@
-//package com.cls.sitenavi.service;
-//import java.util.List;
-//
-//import com.cls.sitenavi.entity.Comment;
-//import com.baomidou.mybatisplus.extension.service.IService;
-//
-//
-//public interface ICommentService extends IService<Comment> {
-//
-//    List<Comment> findAllByForeignId(Integer foreignId);
-//    String getUsername(Integer id);
-//    String getTargetname(Integer id);
-//
-//    boolean deleteComment(Integer commentId);
-//}
+package com.cls.sitenavi.service;
+import java.util.List;
+import java.util.Map;
+
+import com.cls.sitenavi.entity.Comment;
+
+public interface ICommentService {
+	Map<String,Object> getCommentPage (Map maps);
+    
+    void insertComment (Map maps);
+    
+    List<Comment> getComment(Map maps);
+}

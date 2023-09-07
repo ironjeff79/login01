@@ -60,6 +60,10 @@ public class Comment implements Serializable {
      * 创建时间
      */
     private LocalDateTime createtime;
+    /**
+     * 用户名
+     */
+    private String userName;
 
     /**
      * 子评论
@@ -136,7 +140,13 @@ public class Comment implements Serializable {
     public void setCreatetime(LocalDateTime createtime) {
         this.createtime = createtime;
     }
+    public String getUserName() {
+        return userName;
+    }
 
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
     @Override
     public String toString() {
         return "Comment{" +
@@ -148,6 +158,7 @@ public class Comment implements Serializable {
             ", target = " + target +
             ", pid = " + pid +
             ", createtime = " + createtime +
+                ", userName = " + userName +
         "}";
     }
 }

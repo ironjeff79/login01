@@ -1,3 +1,81 @@
+package com.cls.sitenavi.controllers;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.ServletException;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.alibaba.fastjson.JSON;
+import com.cls.sitenavi.entity.Comment;
+import com.cls.sitenavi.entity.Message;
+import com.cls.sitenavi.service.ICommentService;
+
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+
+@CrossOrigin(origins = "http://localhost:8081")
+@RestController
+public class CommentController {
+    @Autowired
+    public ICommentService commentService;
+    @PostMapping("/commentPage")
+    public String getCommentPage(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
+      BufferedReader streamReader = new BufferedReader( new InputStreamReader(req.getInputStream(), "UTF-8"));
+            StringBuilder responseStrBuilder = new StringBuilder();
+            String inputStr;
+            while ((inputStr = streamReader.readLine()) != null) {
+                responseStrBuilder.append(inputStr);
+            }
+        Map maps = (Map)JSON.parse(responseStrBuilder.toString());
+        Map<String,Object> a = commentService.getCommentPage(maps);
+        Message msg = new Message();
+        msg.setCode("success");
+        msg.setMsg("成功しました！");
+        msg.setMaps(a);
+        return JSON.toJSONString(msg);
+    }
+    
+    @PostMapping("/comment")
+    public String getComment(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
+      BufferedReader streamReader = new BufferedReader( new InputStreamReader(req.getInputStream(), "UTF-8"));
+            StringBuilder responseStrBuilder = new StringBuilder();
+            String inputStr;
+            while ((inputStr = streamReader.readLine()) != null) {
+                responseStrBuilder.append(inputStr);
+            }
+        Map maps = (Map)JSON.parse(responseStrBuilder.toString());
+        List<Comment> comments = commentService.getComment(maps);
+        Message msg = new Message();
+        msg.setCode("success");
+        msg.setMsg("成功しました！");
+        msg.setComments(comments);
+        return JSON.toJSONString(msg);
+    }
+    
+    @PostMapping("/commentPosted")
+    public String commentPosted(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
+      BufferedReader streamReader = new BufferedReader( new InputStreamReader(req.getInputStream(), "UTF-8"));
+            StringBuilder responseStrBuilder = new StringBuilder();
+            String inputStr;
+            while ((inputStr = streamReader.readLine()) != null) {
+                responseStrBuilder.append(inputStr);
+            }
+        Map maps = (Map)JSON.parse(responseStrBuilder.toString());
+        commentService.insertComment(maps);
+        Message msg = new Message();
+        msg.setCode("success");
+        msg.setMsg("成功しました！");
+        return JSON.toJSONString(msg);
+    }
+}
 //package com.cls.sitenavi.controllers;
 //
 //import com.alibaba.fastjson.JSON;
@@ -98,18 +176,16 @@
 ////        }
 ////    }
 //
-//    @PostMapping("/delete/{commentId}")
-//    public  Message<?> deleteComment(@PathVariable Integer commentId){
-//        Message msg = new Message();
-//        if (commentService.deleteComment(commentId)){
-//            msg.setCode("success");
-//            msg.setMsg("コメントが削除しました。");
-//            return msg;
-//        }else {
-//            msg.setCode("error");
-//            return msg;
-//        }
-//    }
-//
-//
+////    @PostMapping("/delete/{commentId}")
+////    public  Message<?> deleteComment(@PathVariable Integer commentId){
+////        Message msg = new Message();
+////        if (commentService.deleteComment(commentId)){
+////            msg.setCode("success");
+////            msg.setMsg("コメントが削除しました。");
+////            return msg;
+////        }else {
+////            msg.setCode("error");
+////            return msg;
+////        }
+////    }
 //}
