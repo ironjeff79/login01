@@ -27,7 +27,7 @@
         <el-table-column prop="userName" label="用户名"></el-table-column>
         <el-table-column align="right">
         <template #default="scope">
-          <!-- <el-button size="small" type="danger" @click="deleteComment(scope.row.commentId)">删除</el-button> -->
+          <el-button size="small" type="danger" @click="deleteComment(scope.row.commentId)">删除</el-button>
         </template>
       </el-table-column>
       </el-table>
@@ -51,6 +51,7 @@
   export default {
     data() {
         return { 
+
           totalPage: 1,
           currentPage: 1,
           pageSize:5,
@@ -70,7 +71,6 @@
                 .then((response) => {
                     var data3 = response.data;
                     if (data3.code == "success") {
-                        console.log(data3);
                         this.filterTableData = data3.maps.comments;
                         this.totalPage = data3.maps.totalPage;
                     }
@@ -129,6 +129,35 @@
             };
             this.getList();
         },
+        async deleteComment(commentId){
+           
+            const confirmResult = await this.$confirm('ユーザーを永久に削除します。よろしいでしょうか?', 'ユーザー削除', {
+                confirmButtonText: '確定',
+                cancelButtonText: 'キャンセル',
+                type: 'warning',
+            }).catch(error => error)
+            if (confirmResult !== 'confirm') {
+                return this.$message.info('削除をキャンセルします')
+            } else {
+                axios({
+                    method: 'post',
+                    url: this.$http + "/deleteComment",
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    data: JSON.stringify(commentId)
+                })
+                    .then((response) => {
+                        var data3 = response.data;
+                        if (data3.code == "success") {
+                            ElMessage.warning(data3.msg);
+                            this.$router.go(0)
+                        }
+                        else if (data3.code == "warning") {
+                            ElMessage.warning(data3.msg);
+                        }
+                    })
+            }
+        }
+
       },
 
 created(){

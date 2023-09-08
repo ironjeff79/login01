@@ -22,7 +22,7 @@
             <Link />
           </el-icon>
           <span style="vertical-align: middle">
-            <div class="url" :href="web?.url" target="_blank">链接直达</div>
+            <a class="url" :href="web?.url" target="_blank">链接直达</a>
           </span>
         </el-button>
         <el-button type="warning" style="margin-left: 30px;">
@@ -66,7 +66,7 @@
                 <b>{{ item.currentUsername }}</b>
                 <span>{{ item.createtime.replace(/T/g, ' ') }}</span>
               </div>
-              <div style="margin-top: 10px;color: #666;">{{ item.content }}</div>
+              <div style="margin-top: 10px;color: #666;">{{ item.content}}</div>
               <!--多级回复-->
               <div style="text-align: right;padding: 6px 0;">
                 <el-button type="default" @click="reply(item.commentId, item.userId)">回复</el-button>
@@ -75,9 +75,9 @@
               <div v-if="item.children">
                 <div v-for="sub in item.children" :key="sub.commentId">
                   <div style="border-left: 2px dashed #666;padding-left: 20px;">
-                    <!-- <b style="cursor: pointer;margin-right: 5px;" @click="reply(sub.pid, sub.userId)">{{
+                    <b style="cursor: pointer;margin-right: 5px;" @click="reply(sub.pid, sub.userId)">{{
                       sub.currentUsername
-                    }}</b> -->
+                    }}</b>
                     <span>回复 <span style="color: cornflowerblue;">@{{ sub.targetName }}：</span><span
                         style="color: #666;margin-left: 10px;">{{ sub.content }}</span></span>
                     <span style="float: right; color: #868484;">{{ sub.createtime.replace(/T/g, ' ') }}</span>
@@ -162,35 +162,11 @@ export default {
   },
   mounted() {
     this.load();
-    // mytoken.value = localStorage.getItem("token");
-    // axios.get('/user/info', {
-    //   // headers: {
-    //   //   Authorization: `Bearer ${token}`
-    //   // },
-    //   params: {
-    //     token: mytoken.value
-    //   },
-    // })
-    //   .then(response => {
-    //     // 处理成功响应的数据
-    //     this.user.id = response.data.data.userId;
-    //     this.user.name = response.data.data.name;
-    //     this.user.avatar = response.data.data.avatar;
-    //     this.replyComment.user_id = this.user.id;
-    //     this.commentedMessage.user_id = this.user.id;
-    //     this.hasLogin = true;
-    //   })
-    //   .catch(error => {
-    //     // 处理错误
-    //     console.error(error);
-    //   });
-
-
   },
   methods: {
-    logout() {
-      ElMessage.success('反馈成功');
-    },
+    // logout() {
+    //   ElMessage.success('反馈成功');
+    // },
     backToIndex() {
       this.isBack = true;
       this.$emit("backFunc", this.isBack);
@@ -205,34 +181,21 @@ export default {
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
         data: JSON.stringify(this.data1)
       })
-        // axios.get('/comment', {
-        //   params: {
-        //     foreignId: this.web.foreignId
-        //   },
-        //   headers: {
-        //     'Content-Type': 'application/json;charset=UTF-8'
-        //   }
-        // })
         .then(res => {
-          console.log("res.data");
-          console.log(res.data);
-          // this.user.id = response.data.data.userId;
           // this.user.name = response.data.data.name;
           // this.user.avatar = response.data.data.avatar;
           // this.replyComment.user_id = this.user.id;
           // this.commentedMessage.user_id = this.user.id;
           // this.hasLogin = true;
-          // this.value = res.data.data.rate;
-          // this.comments = res.data.comments;
-          console.log("this.comments");
-          console.log(this.comments);
+          this.comments = res.data.comments;   
+          this.value = res.data.rate;     
           this.$nextTick(() => {
             this.commentedMessage.content = ''; // 将content置为空字符串
           });
 
         })
         .catch(err => {
-          //console.error(err);
+          console.error(err);
         })
     },
     reply(ppid, target) {
@@ -240,40 +203,40 @@ export default {
       this.dialogFormVisible = true
 
     },
-    // saveReply() {
-    //   if (this.hasLogin === true) {
-    //     axios.post('/comment/posted', {
-    //       rate: this.replyComment.rate,
-    //       content: this.replyComment.content,
-    //       userId: this.replyComment.user_id,
-    //       foreignId: this.web.foreignId,
-    //       pid: this.replyComment.pid,
-    //       target: this.replyComment.target
-    //     }, {
-    //       headers: {
-    //         'Content-Type': 'application/json;charset=UTF-8'
-    //       },
-    //       withCredentials: true
-    //     }).then(res => {
-    //       ElMessage.success('评论发布成功')
-    //       this.$nextTick(() => {
-    //         this.replyComment.content = ''; // 将content置为空字符串
-    //       });
-    //       this.load()
-    //       this.dialogFormVisible = false
-    //     })
-    //       .catch(err => {
-    //         console.error(err);
-    //       })
-    //   } else {
-    //     ElMessage.error('请先登录再进行评论.')
-    //   }
-    // },
+    saveReply() {
+      if (this.hasLogin === true) {
+        axios.post('/comment/posted', {
+          rate: this.replyComment.rate,
+          content: this.replyComment.content,
+          userId: this.replyComment.user_id,
+          foreignId: this.web.foreignId,
+          pid: this.replyComment.pid,
+          target: this.replyComment.target
+        }, {
+          headers: {
+            'Content-Type': 'application/json;charset=UTF-8'
+          },
+          withCredentials: true
+        }).then(res => {
+          ElMessage.success('评论发布成功')
+          this.$nextTick(() => {
+            this.replyComment.content = ''; // 将content置为空字符串
+          });
+          this.load()
+          this.dialogFormVisible = false
+        })
+          .catch(err => {
+            console.error(err);
+          })
+      } else {
+        ElMessage.error('请先登录再进行评论.')
+      }
+    },
     submit() {
       if (!this.commentedMessage.content) {
         ElMessage.warning('请进行评论！')
       } else {
-        // if (this.hasLogin === true) {
+        if (this.hasLogin === true) {
         console.log("!!!")
         console.log(this.commentedMessage.rate, this.commentedMessage.content, this.$route.query.userId, this.commentedMessage.foreignId)
         this.data1 = {
@@ -295,17 +258,20 @@ export default {
           .catch(err => {
             console.error(err);
           })
-        // } else {
-        //   ElMessage.error('请先登录再进行评论.')
-        // }
+        } else {
+          ElMessage.error('请先登录再进行评论.')
+        }
       }
 
     }
 
   },
   created() {
+    if(this.$route.query.userId != null){
     this.userId = this.$route.query.userId;
-    console.log(this.web)
+    this.hasLogin = true;
+    console.log("login successful")
+  }
   },
 };
 </script>
