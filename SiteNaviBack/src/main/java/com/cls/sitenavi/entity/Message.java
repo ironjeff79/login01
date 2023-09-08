@@ -1,4 +1,5 @@
 package com.cls.sitenavi.entity;
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
@@ -13,6 +14,7 @@ public class Message<T> {
     private List<Comment> comments;
     private String page;
     private Map<String,Object> maps;
+    private BigDecimal rate;
     public String getCode() {
         return code;
     }
