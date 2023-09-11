@@ -1,3 +1,4 @@
+<!-- 小组件内评论评分页面 -->
 <template>
   <div>
     <div class="btn">
@@ -29,7 +30,7 @@
           <el-icon style="vertical-align: middle">
             <Warning />
           </el-icon>
-          <span style="vertical-align: middle" @click="logout"> 反馈 </span>
+          <span style="vertical-align: middle" @click="feedback"> 反馈 </span>
         </el-button>
       </div>
     </div>
@@ -66,7 +67,7 @@
                 <b>{{ item.currentUsername }}</b>
                 <span>{{ item.createtime.replace(/T/g, ' ') }}</span>
               </div>
-              <div style="margin-top: 10px;color: #666;">{{ item.content}}</div>
+              <div style="margin-top: 10px;color: #2c2c2c;">{{ item.content }}</div>
               <!--多级回复-->
               <div style="text-align: right;padding: 6px 0;">
                 <el-button type="default" @click="reply(item.commentId, item.userId)">回复</el-button>
@@ -164,9 +165,9 @@ export default {
     this.load();
   },
   methods: {
-    // logout() {
-    //   ElMessage.success('反馈成功');
-    // },
+    feedback() {
+      ElMessage.success('反馈成功');
+    },
     backToIndex() {
       this.isBack = true;
       this.$emit("backFunc", this.isBack);
@@ -178,8 +179,8 @@ export default {
       axios({
         method: 'post',
         url: this.$http + "/comment",
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        data: JSON.stringify(this.data1)
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        data: this.data1
       })
         .then(res => {
           // this.user.name = response.data.data.name;
@@ -187,10 +188,10 @@ export default {
           // this.replyComment.user_id = this.user.id;
           // this.commentedMessage.user_id = this.user.id;
           // this.hasLogin = true;
-          this.comments = res.data.comments;   
-          this.value = res.data.rate;     
+          this.comments = res.data.comments;
+          this.value = res.data.rate;
           this.$nextTick(() => {
-            this.commentedMessage.content = ''; // 将content置为空字符串
+            this.commentedMessage.content = ''; 
           });
 
         })
@@ -199,32 +200,34 @@ export default {
         })
     },
     reply(ppid, target) {
-      this.replyComment = { pid: ppid, user_id: this.user.id, foreignId: this.web.foreignId, target: target }
+      this.replyComment = { pid: ppid, user_id: this.$route.query.userId, foreignId: this.web.foreignId, target: target }
       this.dialogFormVisible = true
-
     },
+    //回复区
     saveReply() {
       if (this.hasLogin === true) {
-        axios.post('/comment/posted', {
+        this.data1 = {
           rate: this.replyComment.rate,
           content: this.replyComment.content,
           userId: this.replyComment.user_id,
           foreignId: this.web.foreignId,
           pid: this.replyComment.pid,
           target: this.replyComment.target
-        }, {
-          headers: {
-            'Content-Type': 'application/json;charset=UTF-8'
-          },
-          withCredentials: true
-        }).then(res => {
-          ElMessage.success('评论发布成功')
-          this.$nextTick(() => {
-            this.replyComment.content = ''; // 将content置为空字符串
-          });
-          this.load()
-          this.dialogFormVisible = false
+        };
+        axios({
+          method: 'post',
+          url: this.$http + "/saveReply",
+          headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+          data: this.data1
         })
+          .then(res => {
+            ElMessage.success('评论发布成功')
+            this.$nextTick(() => {
+              this.replyComment.content = ''; 
+            });
+            this.load()
+            this.dialogFormVisible = false
+          })
           .catch(err => {
             console.error(err);
           })
@@ -232,46 +235,45 @@ export default {
         ElMessage.error('请先登录再进行评论.')
       }
     },
+    //评论区评分以及评论
     submit() {
       if (!this.commentedMessage.content) {
         ElMessage.warning('请进行评论！')
       } else {
         if (this.hasLogin === true) {
-        console.log("!!!")
-        console.log(this.commentedMessage.rate, this.commentedMessage.content, this.$route.query.userId, this.commentedMessage.foreignId)
-        this.data1 = {
-          rate: this.commentedMessage.rate,
-          content: this.commentedMessage.content,
-          userId: this.$route.query.userId,
-          foreignId: this.commentedMessage.foreignId
-        };
-        axios({
-          method: 'post',
-          url: this.$http + "/commentPosted",
-          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-          data: JSON.stringify(this.data1)
-        })
-          .then(res => {
-            ElMessage.success('评论发布成功')
-            this.load()
+          console.log(this.commentedMessage.rate, this.commentedMessage.content, this.$route.query.userId, this.commentedMessage.foreignId)
+          this.data1 = {
+            rate: this.commentedMessage.rate,
+            content: this.commentedMessage.content,
+            userId: this.$route.query.userId,
+            foreignId: this.commentedMessage.foreignId
+          };
+          axios({
+            method: 'post',
+            url: this.$http + "/commentPosted",
+            headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+            data: this.data1
           })
-          .catch(err => {
-            console.error(err);
-          })
+            .then(res => {
+              ElMessage.success('评论发布成功')
+              this.load()
+            })
+            .catch(err => {
+              console.error(err);
+            })
         } else {
           ElMessage.error('请先登录再进行评论.')
         }
       }
-
     }
-
   },
+
   created() {
-    if(this.$route.query.userId != null){
-    this.userId = this.$route.query.userId;
-    this.hasLogin = true;
-    console.log("login successful")
-  }
+    if (this.$route.query.userId != null) {
+      this.userId = this.$route.query.userId;
+      this.hasLogin = true;
+      console.log("login successful")
+    }
   },
 };
 </script>
@@ -329,7 +331,6 @@ export default {
   text-decoration: underline;
 }
 
-
 .commentBox {
   width: 880px;
   margin: 0 auto;
@@ -356,6 +357,5 @@ export default {
 
 .rateBox {
   margin-bottom: 10px;
-}
-</style>
+}</style>
   

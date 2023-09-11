@@ -52,8 +52,8 @@ export default {
       axios({
         method: 'post',
         url: this.$http + "/portal",
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        data: JSON.stringify(this.data1)
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        data: this.data1
       })
         .then((response) => {
           this.$router.push({ name: 'changeInfo', query: response.data });
@@ -69,8 +69,8 @@ export default {
       axios({
         method: 'post',
         url: this.$http + "/portal",
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        data: JSON.stringify(this.data1)
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        data: this.data1
       })
         .then((response) => {
           this.$router.push({ name: 'changePass', query: response.data });

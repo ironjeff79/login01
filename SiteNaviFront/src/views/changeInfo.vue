@@ -81,8 +81,8 @@ export default {
         axios({
           method: 'post',
           url: this.$http +"/changeInfo",
-          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-          data: JSON.stringify(this.data2)
+          headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+          data: this.data2
         })
           .then((response) => {
             var data3 = response.data;

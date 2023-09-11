@@ -39,7 +39,7 @@
                     <!-- {{ scope.row }} -->
                     <el-tooltip effect="dark" content="編集" placement="top">
                         <el-button size="small" type="primary" :icon="Edit"
-                            @click="showEditDialog(scope.row.password)"></el-button>
+                            @click="showEditDialog(scope.row.id)"></el-button>
                     </el-tooltip>
                     <el-tooltip effect="dark" content="削除" placement="top">
                         <el-button size="small" type="danger" @click="removeUserById(scope.row.userId)" :icon="Delete" />
@@ -72,9 +72,9 @@
                     <el-form-item label="携帯" prop="phoneNum">
                         <el-input v-model="editUserForm.phoneNum" @keyup.enter="editUser"></el-input>
                     </el-form-item>
-                    <el-form-item label="パスワード" prop="password" class="password">
+                    <!-- <el-form-item label="パスワード" prop="password" class="password">
                         <el-input v-model="editUserForm.password" disabled></el-input>
-                    </el-form-item>
+                    </el-form-item> -->
                 </el-form>
                 <!-- 底部区 -->
                 <span slot="footer" class="dialog-footer">
@@ -130,6 +130,7 @@ export default {
     },
     data() {
         return {
+            index:0,
             ONOFFvalue: '0',
             data1: {},
             userlist: [],
@@ -163,12 +164,13 @@ export default {
             axios({
                 method: 'post',
                 url: this.$http + "/SearchPage",
-                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                data: JSON.stringify(this.data1)
+                headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+                data: this.data1
             })
                 .then((response) => {
                     var data3 = response.data;
                     if (data3.code == "success") {
+                        console.log(data3)
                         this.currentPageData = data3.maps.userList;
                         this.totalPage = data3.maps.totalPage;
                     }
@@ -238,8 +240,8 @@ export default {
                 axios({
                     method: 'post',
                     url: this.$http + "/changeState",
-                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                    data: JSON.stringify(this.data1)
+                    headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+                    data: this.data1
                 })
                     .then((response) => {
                         var data3 = response.data;
@@ -287,33 +289,22 @@ export default {
             this.$refs.editUserFormRef.resetFields();
         },
         // 展示编辑用户的对话框
-        showEditDialog(password) {
+        showEditDialog(id) {
+            
             this.editDialogVisible = true
-            this.data1 = { password: password };
+            this.data1 = {        
+                id: id };
             axios({
                 method: 'post',
                 url: this.$http + "/SearchDirect",
-                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                data: JSON.stringify(this.data1)
+                headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+                data: this.data1
             })
                 .then((response) => {
                     this.editUserForm = response.data.user;
                 })
         },
-        // showEditRole(password) {
-        //     this.editRoleVisible = true
-
-        //     this.data1 = { password: password };
-        //     axios({
-        //         method: 'post',
-        //         url: this.$http + "/SearchDirect",
-        //         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        //         data: JSON.stringify(this.data1)
-        //     })
-        //         .then((response) => {
-        //             this.editUserForm = response.data.user;
-        //         })
-        // },
+       
         editUser() {
             if (this.validForm() == true) {
                 this.data1 = {
@@ -325,8 +316,8 @@ export default {
                 axios({
                     method: 'post',
                     url: this.$http + "/changeAdmin",
-                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                    data: JSON.stringify(this.data1)
+                    headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+                    data: this.data1
                 })
                     .then((response) => {
                         var data3 = response.data;
@@ -360,8 +351,8 @@ export default {
                 axios({
                     method: 'post',
                     url: this.$http + "/deleteUser",
-                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                    data: JSON.stringify(this.data1)
+                    headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+                    data: this.data1
                 })
                     .then((response) => {
                         var data3 = response.data;

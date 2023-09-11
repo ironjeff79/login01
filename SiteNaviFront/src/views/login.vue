@@ -50,26 +50,27 @@ export default {
           userId: this.ruleForm.userId,
           password: this.ruleForm.pass
         };
+        console.log(this.data1)
         axios({
           method: 'post',
-          url: this.$http +"/login",
-          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-          data: JSON.stringify(this.data1)
+          url: this.$http + "/login",
+          headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+          data: this.data1
         })
           .then((response) => {
             var data3 = response.data;
             if (data3.code == "success") {
               // location.href = "/?userId=" + this.ruleForm.userId + "loginState : true";
-              router.push({ path: '/', query: { loginState:"true"　,userId :this.ruleForm.userId } })
-           
-              
+              router.push({ path: '/', query: { loginState: "true", userId: this.ruleForm.userId } })
+
+
             }
             else if (data3.code == "warning") {
               console.log(data3);
               ElMessage.warning(data3.msg);
             }
           })
-          .catch(function (error) { 
+          .catch(function (error) {
             console.log(error);
           });
       } else {
@@ -77,7 +78,7 @@ export default {
       }
     },
     registerForm() {
-      this.$router.push({ path: '/register'});
+      this.$router.push({ path: '/register' });
     }
   },
   created() {

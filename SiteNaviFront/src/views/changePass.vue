@@ -85,7 +85,7 @@
           axios({
             method: 'post',
             url: this.$http +"/changePass",
-            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            headers: { 'Content-Type': 'application/json;charset=UTF-8' },
             data: JSON.stringify(this.data2)
           })
             .then((response) => {

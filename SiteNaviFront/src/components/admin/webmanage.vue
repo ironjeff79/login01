@@ -1,4 +1,5 @@
 <template>
+  222222
     <!-- 柱状图容器 -->
     <div class="chart-container">
       <div ref="chart" class="chart"></div>

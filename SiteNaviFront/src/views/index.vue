@@ -37,7 +37,6 @@
               </li>
             </ul>
           </li>
-          <!-- 关于本站 -->
           <li class="submit-tag">
             <router-link to="/about">
               <i class="linecons-heart"></i>
@@ -55,7 +54,7 @@
           <li class="hidden-sm hidden-xs">
             <a href="javascript:void(0)" data-toggle="sidebar"><i class="fa-bars"></i></a>
           </li>
-          <!-- <li class="dropdown hover-line language-switcher">
+          <li class="dropdown hover-line language-switcher">
             <a href="javascript:void(0)" class="dropdown-toggle" data-toggle="dropdown">
               <img :src="lang.flag" /> {{ lang.name }}
             </a>
@@ -67,7 +66,7 @@
                 </a>
               </li>
             </ul>
-          </li> -->
+          </li>
         </ul>
         <ul class="user-info-menu right-links list-inline list-unstyled">
           <li class="hidden-sm hidden-xs">

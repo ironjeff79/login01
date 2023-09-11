@@ -84,10 +84,6 @@ function changeInfoButton() {
           });
     }
 
-
-
-
-  
   onMounted(() => {
     jump("usermanage");
   });
