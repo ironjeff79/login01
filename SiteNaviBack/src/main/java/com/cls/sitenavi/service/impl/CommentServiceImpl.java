@@ -64,5 +64,12 @@ public class CommentServiceImpl implements ICommentService {
     	String username = jdbcTemplate.queryForObject(sql,new Object[] {id},String.class);
         return username;
     }
+    public void saveReply(Map maps){
+        String sqll ="select id from user where userId = '" +  maps.get("userId") + "'";
+        Integer id =jdbcTemplate.queryForObject(sqll,Integer.class);
+    String sql =  "insert into comment (user_id,content,foreign_id,pid,target) values ('" + id + "'"
+    + ",'"  + maps.get("content") + "'" + ",'" + maps.get("foreignId") + "'" + ",'" + maps.get("pid") + "'" + ",'" + maps.get("target") + "')";   
+    jdbcTemplate.execute(sql);
+    }
 }
 

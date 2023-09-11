@@ -1,23 +1,19 @@
 package com.cls.sitenavi.controllers;
 
-import com.alibaba.fastjson.JSON;
-import com.cls.common.util.Result;
-import com.cls.sitenavi.entity.User;
-import com.cls.sitenavi.entity.Message;
-import com.cls.sitenavi.service.IRegisterService;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
+import java.util.List;
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.List;
-import java.util.Map;
+import com.alibaba.fastjson.JSON;
+import com.cls.sitenavi.entity.Message;
+import com.cls.sitenavi.entity.User;
+import com.cls.sitenavi.service.IRegisterService;
 
 @CrossOrigin(origins = "http://localhost:8081")
 @RestController
@@ -30,15 +26,7 @@ public class RegisterController {
     }
 
     @PostMapping("/register")
-    public String register(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        // 获取JSON数据
-        BufferedReader streamReader = new BufferedReader( new InputStreamReader(req.getInputStream(), "UTF-8"));
-        StringBuilder responseStrBuilder = new StringBuilder();
-        String inputStr;
-        while ((inputStr = streamReader.readLine()) != null) {
-            responseStrBuilder.append(inputStr);
-        }
-        User user = JSON.parseObject(responseStrBuilder.toString(), User.class);
+    public String register(@RequestBody User user){
         //ユーザー名とメールが重複するかどうかの判断
         List<Map<String, Object>> list = registerService.getUserId(user.getUserId());
         List<Map<String, Object>> list2 = registerService.getMail(user.getMail());

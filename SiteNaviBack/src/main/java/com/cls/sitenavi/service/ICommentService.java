@@ -16,4 +16,6 @@ public interface ICommentService {
     List<Comment> getComment(Map maps);
 
     void deleteComment(int commentId);
+    
+    void saveReply (Map maps);
 }

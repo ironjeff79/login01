@@ -1,8 +1,5 @@
 package com.cls.sitenavi.controllers;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.List;
@@ -10,11 +7,10 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-import javax.servlet.ServletException;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.alibaba.fastjson.JSON;
@@ -22,42 +18,25 @@ import com.cls.sitenavi.entity.Comment;
 import com.cls.sitenavi.entity.Message;
 import com.cls.sitenavi.service.ICommentService;
 
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-
 @CrossOrigin(origins = "http://localhost:8081")
 @RestController
 public class CommentController {
 	@Autowired
 	public ICommentService commentService;
 
+	//评论管理页面
 	@PostMapping("/commentPage")
-	public String getCommentPage(HttpServletRequest req, HttpServletResponse resp)
-			throws IOException, ServletException {
-		BufferedReader streamReader = new BufferedReader(new InputStreamReader(req.getInputStream(), "UTF-8"));
-		StringBuilder responseStrBuilder = new StringBuilder();
-		String inputStr;
-		while ((inputStr = streamReader.readLine()) != null) {
-			responseStrBuilder.append(inputStr);
-		}
-		Map maps = (Map) JSON.parse(responseStrBuilder.toString());
+	public String getCommentPage(@RequestBody Map maps) {
 		Map<String, Object> a = commentService.getCommentPage(maps);
 		Message msg = new Message();
 		msg.setCode("success");
-		msg.setMsg("成功しました！");
 		msg.setMaps(a);
 		return JSON.toJSONString(msg);
 	}
-	
+
+	//页面评论显示
 	@PostMapping("/comment")
-	public String getComment(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
-		BufferedReader streamReader = new BufferedReader(new InputStreamReader(req.getInputStream(), "UTF-8"));
-		StringBuilder responseStrBuilder = new StringBuilder();
-		String inputStr;
-		while ((inputStr = streamReader.readLine()) != null) {
-			responseStrBuilder.append(inputStr);
-		}
-		Map maps = (Map) JSON.parse(responseStrBuilder.toString());
+	public String getComment(@RequestBody Map maps) {
 		List<Comment> comments = commentService.getComment(maps);
 
 		// 获取所有顶级评论（没有父评论）及其子评论
@@ -76,7 +55,7 @@ public class CommentController {
 			}
 			// 设置子评论的用户名和目标名字
 			rootComment.setChildren(children);
-		}	
+		}
 		Message msg = new Message();
 		BigDecimal rate = BigDecimal.ZERO;
 		msg.setRate(BigDecimal.ZERO);
@@ -87,40 +66,31 @@ public class CommentController {
 			msg.setRate(res.divide(BigDecimal.valueOf(commentList.size()), 1, RoundingMode.HALF_UP));
 		});
 		msg.setCode("success");
-		msg.setMsg("成功しました！");
 		msg.setComments(rootComments);
 		return JSON.toJSONString(msg);
 	}
 
 	@PostMapping("/commentPosted")
-	public String commentPosted(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
-		BufferedReader streamReader = new BufferedReader(new InputStreamReader(req.getInputStream(), "UTF-8"));
-		StringBuilder responseStrBuilder = new StringBuilder();
-		String inputStr;
-		while ((inputStr = streamReader.readLine()) != null) {
-			responseStrBuilder.append(inputStr);
-		}
-		Map maps = (Map) JSON.parse(responseStrBuilder.toString());
+	public String commentPosted(@RequestBody Map maps) {
 		commentService.insertComment(maps);
 		Message msg = new Message();
 		msg.setCode("success");
-		msg.setMsg("成功しました！");
 		return JSON.toJSONString(msg);
 	}
 
 	@PostMapping("/deleteComment")
-	public String deleteComment(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
-		BufferedReader streamReader = new BufferedReader(new InputStreamReader(req.getInputStream(), "UTF-8"));
-		StringBuilder responseStrBuilder = new StringBuilder();
-		String inputStr;
-		while ((inputStr = streamReader.readLine()) != null) {
-			responseStrBuilder.append(inputStr);
-		}
-		int commentId = (int) JSON.parse(responseStrBuilder.toString());
+	public String deleteComment(@RequestBody int commentId) {
 		commentService.deleteComment(commentId);
 		Message msg = new Message();
 		msg.setCode("success");
-		msg.setMsg("成功しました！");
+		return JSON.toJSONString(msg);
+	}
+
+	@PostMapping("/saveReply")
+	public String saveReply(@RequestBody Map maps) {
+		commentService.saveReply(maps);
+		Message msg = new Message();
+		msg.setCode("success");
 		return JSON.toJSONString(msg);
 	}
 }

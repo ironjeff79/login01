@@ -1,25 +1,16 @@
 package com.cls.sitenavi.controllers;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-
-import javax.servlet.ServletException;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.alibaba.fastjson.JSON;
 import com.cls.sitenavi.entity.Message;
 import com.cls.sitenavi.entity.User;
 import com.cls.sitenavi.service.IChangeService;
-
-//import javax.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 
 @CrossOrigin(origins = "http://localhost:8081")
 @RestController
@@ -33,15 +24,8 @@ public class ChangeInfoController {
 	}
 
 	@PostMapping("/changeInfo")
-	public String changeInfo(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
-		// 获取JSON数据
-		BufferedReader streamReader = new BufferedReader(new InputStreamReader(req.getInputStream(), "UTF-8"));
-		StringBuilder responseStrBuilder = new StringBuilder();
-		String inputStr;
-		while ((inputStr = streamReader.readLine()) != null) {
-			responseStrBuilder.append(inputStr);
-		}
-		User user = JSON.parseObject(responseStrBuilder.toString(), User.class);
+	public String changeInfo(@RequestBody User user) {
+		System.out.println("進入changeInfo");
 		User list = changeService.getInfo(user);
 		Message msg = new Message();
 		if (list != null) {
@@ -57,16 +41,8 @@ public class ChangeInfoController {
 	}
 
 	@PostMapping("/changePass")
-	public String changePass(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
-		// 获取JSON数据
-		BufferedReader streamReader = new BufferedReader(new InputStreamReader(req.getInputStream(), "UTF-8"));
-		StringBuilder responseStrBuilder = new StringBuilder();
-		String inputStr;
-		while ((inputStr = streamReader.readLine()) != null) {
-			responseStrBuilder.append(inputStr);
-		}
-		User user = JSON.parseObject(responseStrBuilder.toString(), User.class);
-
+	public String changePass(@RequestBody User user) {
+		System.out.println("進入changePass");
 		Message msg = new Message();
 		msg.setCode("success");
 		msg.setMsg("パスワードが変更しました");
@@ -75,15 +51,7 @@ public class ChangeInfoController {
 	}
 
 	@PostMapping("/deleteUser")
-	public String deleteUser(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
-		// 获取JSON数据
-		BufferedReader streamReader = new BufferedReader(new InputStreamReader(req.getInputStream(), "UTF-8"));
-		StringBuilder responseStrBuilder = new StringBuilder();
-		String inputStr;
-		while ((inputStr = streamReader.readLine()) != null) {
-			responseStrBuilder.append(inputStr);
-		}
-		User user = JSON.parseObject(responseStrBuilder.toString(), User.class);
+	public String deleteUser(@RequestBody User user) {
 		Message msg = new Message();
 		msg.setCode("success");
 		msg.setMsg("ユーザーアカウントが削除しました。");
@@ -92,15 +60,7 @@ public class ChangeInfoController {
 	}
 
 	@PostMapping("/changeAdmin")
-	public String changeAdmin(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
-		// 获取JSON数据
-		BufferedReader streamReader = new BufferedReader(new InputStreamReader(req.getInputStream(), "UTF-8"));
-		StringBuilder responseStrBuilder = new StringBuilder();
-		String inputStr;
-		while ((inputStr = streamReader.readLine()) != null) {
-			responseStrBuilder.append(inputStr);
-		}
-		User user = JSON.parseObject(responseStrBuilder.toString(), User.class);
+	public String changeAdmin(@RequestBody User user) {
 		Message msg = new Message();
 		changeService.changeAdmin(user);
 		msg.setCode("success");
@@ -110,23 +70,14 @@ public class ChangeInfoController {
 	}
 
 	@PostMapping("/changeState")
-	public String activeState(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
-		// 获取JSON数据
-		BufferedReader streamReader = new BufferedReader(new InputStreamReader(req.getInputStream(), "UTF-8"));
-		StringBuilder responseStrBuilder = new StringBuilder();
-		String inputStr;
-		while ((inputStr = streamReader.readLine()) != null) {
-			responseStrBuilder.append(inputStr);
-		}
-		User user = JSON.parseObject(responseStrBuilder.toString(), User.class);
-
+	public String activeState(@RequestBody User user) {
 		Message msg = new Message();
 		changeService.changeState(user);
-		if( user.getState().equals("1")) {
+		if (user.getState().equals("1")) {
 			msg.setCode("success");
 			msg.setMsg("ユーザーが有効化しました。");
 			return JSON.toJSONString(msg);
-		}else if( user.getState().equals ("0")) {
+		} else if (user.getState().equals("0")) {
 			msg.setCode("success");
 			msg.setMsg("ユーザーが無効化しました。");
 			return JSON.toJSONString(msg);

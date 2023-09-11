@@ -1,18 +1,17 @@
 package com.cls.sitenavi.entity;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
-import lombok.Data;
-
-
-import lombok.Data;
 //import org.springframework.data.annotation.Transient;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
+
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
+
+import lombok.Data;
 
 @Data
 @TableName("comment")
@@ -65,9 +64,8 @@ public class Comment implements Serializable {
      */
     private String userName;
 
-    /**
-     * 子评论
-     */
+    //子评论列表，类型为List<Comment>，用于存储该评论的子评论。
+
     @TableField(exist = false)
     private List<Comment> children;
 
