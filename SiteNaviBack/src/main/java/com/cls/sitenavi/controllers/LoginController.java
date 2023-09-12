@@ -14,6 +14,9 @@ import com.cls.sitenavi.entity.Message;
 import com.cls.sitenavi.entity.User;
 import com.cls.sitenavi.service.ILoginService;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
+
 @CrossOrigin(origins = "http://localhost:8081")
 @RestController
 public class LoginController {
@@ -26,7 +29,9 @@ public class LoginController {
 	}
 
 	@PostMapping("/login")
-	public String login(@RequestBody User user) {
+	
+	public String login(@RequestBody User user,HttpServletRequest req) {
+		
 		User list = loginService.confirmUserInfo(user);
 		Message msg = new Message();
 		if (list != null) {
@@ -36,11 +41,15 @@ public class LoginController {
 				return JSON.toJSONString(msg);
 			} else {
 				msg.setCode("success");
-				//				HttpSession session = req.getSession();
-				//				session.setAttribute("user", list);
-				//				User user1 = (User) session.getAttribute("user");
-				//				msg.setUser(list);
-				//				session.setMaxInactiveInterval(1);
+				HttpSession session = req.getSession();
+				System.out.println("拦截器中的session的id是====" + session.getId());
+				String sessionId =  session.getId();
+				session.setAttribute("user", list);
+				User user1 = (User) session.getAttribute("user");
+				System.out.println(user1);
+				msg.setUser(list);
+				msg.setSessionId(sessionId);
+//				session.setMaxInactiveInterval(1);
 				return JSON.toJSONString(msg);
 			}
 		} else {
@@ -50,6 +59,23 @@ public class LoginController {
 		}
 	}
 
+	@PostMapping("/logOut")
+	public String logOut(HttpServletRequest req) {
+		HttpSession session =req.getSession();
+        System.out.println("拦截器中的session的id是====" + session.getId());
+//        session.invalidate();
+//        String sessionId =  session.getId();
+//        System.out.println("登出后中的session的id是====" + session.getId());
+        Object obj = session.getAttribute("user");
+		User user1 = (User) session.getAttribute("user");
+		System.out.println(user1);
+		session.setAttribute("user", "");
+		String str = session.getAttribute("user").toString();
+		System.out.println(str);
+		return "ログアウトしました。";
+	}
+
+	
 	@PostMapping("/portal")
 	public String portal(@RequestBody User user) {
 		// 获取JSON数据

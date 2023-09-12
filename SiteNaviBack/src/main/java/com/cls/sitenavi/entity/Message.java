@@ -15,6 +15,7 @@ public class Message<T> {
     private String page;
     private Map<String,Object> maps;
     private BigDecimal rate;
+    private String sessionId;
     public String getCode() {
         return code;
     }
