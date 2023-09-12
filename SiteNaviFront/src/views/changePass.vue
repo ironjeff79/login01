@@ -111,6 +111,12 @@
       this.ruleForm.mail = this.$route.query.mail;
     this.ruleForm.userId = this.$route.query.userId;
     this.ruleForm.phoneNum = this.$route.query.phoneNum;
+    console.log(localStorage.getItem("sessionId",))
+    const str = localStorage.getItem("sessionId",)
+    if (str == 0) {
+      ElMessage.warning('登录状态已过期，请重新登录')
+      this.$router.go(-1)
+    }
     }
   }
   </script>

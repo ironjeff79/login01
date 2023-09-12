@@ -36,6 +36,8 @@
 
 <script>
 import axios, { } from 'axios'
+import router from '../router/router';
+import { ElMessage } from 'element-plus';
 export default {
   props: ['Id'],
   data() {
@@ -83,14 +85,34 @@ export default {
       this.$router.push({ path: '/admin' });
     },
     logOutButton() {
-      location.href = "/";
+      axios({
+        method: 'post',
+        url: this.$http + "/logOut",
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' }
+      })
+        .then((response) => {
+          var data3 = response.data;
+          console.log(data3)
+          console.log(data3.sessionId)
+          localStorage.setItem("sessionId","0")
+          console.log(localStorage.getItem("sessionId",))
+          location.href = "/";
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
     }
   },
   created() {
     this.userId = this.$route.query.userId;
     this.pass = this.$route.query.pass;
+    console.log(localStorage.getItem("sessionId",))
+    const str = localStorage.getItem("sessionId",)
+    if (str == 0) {
+      ElMessage.warning('登录状态已过期，请重新登录')
+      location.href = "/signIn";
+    }
   },
-
 }
 </script>
 

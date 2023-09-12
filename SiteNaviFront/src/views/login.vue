@@ -62,7 +62,10 @@ export default {
             if (data3.code == "success") {
               // location.href = "/?userId=" + this.ruleForm.userId + "loginState : true";
               router.push({ path: '/', query: { loginState: "true", userId: this.ruleForm.userId } })
-
+              console.log(data3);
+              console.log(data3.sessionId);
+              localStorage.setItem("sessionId",data3.sessionId)
+              console.log(localStorage.getItem("sessionId",))
 
             }
             else if (data3.code == "warning") {

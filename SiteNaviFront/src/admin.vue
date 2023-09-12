@@ -62,8 +62,23 @@
   
   function output() {
     // 退出登录，清除 token 并跳转到首页
-        // localStorage.removeItem("token"),
-        location.href = "/"}
+        // localStorage.removeItem("token"),        
+        axios({
+        method: 'post',
+        url: "http://localhost:8080/logOut",
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' }
+      })
+        .then((response) => {
+          var data3 = response.data;
+          console.log(data3)
+          console.log(data3.sessionId)
+          localStorage.setItem("sessionId","0")
+          console.log(localStorage.getItem("sessionId",))
+          location.href = "/";
+        })
+        .catch(function (error) {
+          console.log(error);
+        });}
         
    
 function changeInfoButton() {    
@@ -85,8 +100,17 @@ function changeInfoButton() {
     }
 
   onMounted(() => {
-    jump("usermanage");
-  });
+    console.log(localStorage.getItem("sessionId",))
+    const str = localStorage.getItem("sessionId",)
+    if (str == 0) {
+      ElMessage.warning('登录状态已过期，请重新登录')
+      location.href = "/signIn";
+    }
+
+    else {jump("usermanage");
+    }
+  })
+
   
   </script>
   

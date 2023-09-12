@@ -120,6 +120,7 @@ import itemsData from "../assets/data.json";
 import { loadJs } from '../assets/js/app.js';
 import Cookies from "js-cookie";
 import router from "../router/router";
+import { ElMessage } from 'element-plus';
 
 export default {
   computed: {
@@ -160,11 +161,18 @@ export default {
 
     this.lang = this.langList[0];
     loadJs();
+
     if (this.$route.query.loginState === "true") {
+      const str = localStorage.getItem("sessionId",)
+      console.log(str)
+      if (str == 0) {
+        ElMessage.warning('登录状态已过期，请重新登录')
+        location.href = "/signIn";
+      }else{
       this.hasLogin = true;
       this.userId = this.$route.query.userId;
+      }
     }
-
   },
   methods: {
     transName(webItem) {
@@ -175,11 +183,16 @@ export default {
       location.href = "/signIn";
     },
     infoForm() {
-      if(this.userId === "admin"){
-                router.push("/admin")
-            }
-            else{location.href = "/login?userId=" + this.userId;}
-      
+      const str = localStorage.getItem("sessionId",)
+      if (str == 0) {
+        ElMessage.warning('登录状态已过期，请重新登录')
+        this.$router.go(-1)
+      }
+      else if (this.userId === "admin") {
+        router.push("/admin")
+      }
+      else { location.href = "/login?userId=" + this.userId; }
+
     },
     getInfoFromSon(Web = Object) {
       this.targetWeb = Web;
