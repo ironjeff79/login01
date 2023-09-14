@@ -45,6 +45,22 @@
           foreignId: web.foreignId,
           title: web.title
         };
+      //   axios({
+      //   method: 'post',
+      //   url: this.$http + "/addCount/"+webId,
+      //   headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+      //   data: JSON.stringify(this.value)
+      // })
+      //   .then((response) => {
+      //     var data3 = response.data;
+      //     console.log(data3)
+      //     this.option.xAxis.data = data3.maps.web_id.map(String);
+      //     this.option.series.data = data3.maps.click_count.map(Number);
+      //     this.renderChart(this.value);
+      //   })
+      //   .catch(function (error) {
+      //     console.log(error);
+      //   });
       },
       openweb(url) {
         window.open(url, '_blank');

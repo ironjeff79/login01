@@ -64,7 +64,7 @@ export default {
               router.push({ path: '/', query: { loginState: "true", userId: this.ruleForm.userId } })
               console.log(data3);
               console.log(data3.sessionId);
-              localStorage.setItem("sessionId",data3.sessionId)
+              localStorage.setItem("sessionId", data3.sessionId)
               console.log(localStorage.getItem("sessionId",))
 
             }

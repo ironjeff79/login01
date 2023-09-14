@@ -164,13 +164,14 @@ export default {
 
     if (this.$route.query.loginState === "true") {
       const str = localStorage.getItem("sessionId",)
+      console.log("session Id")
       console.log(str)
       if (str == 0) {
         ElMessage.warning('登录状态已过期，请重新登录')
         location.href = "/signIn";
-      }else{
-      this.hasLogin = true;
-      this.userId = this.$route.query.userId;
+      } else {
+        this.hasLogin = true;
+        this.userId = this.$route.query.userId;
       }
     }
   },

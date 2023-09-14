@@ -130,7 +130,7 @@ export default {
     },
     data() {
         return {
-            index:0,
+            index: 0,
             ONOFFvalue: '0',
             data1: {},
             userlist: [],
@@ -140,7 +140,7 @@ export default {
             totalPage: 1,
             currentPage: 1,
             currentPageData: [],
-            pageSize:3,
+            pageSize: 3,
 
             editDialogVisible: false,
             editRoleVisible: false,
@@ -170,6 +170,7 @@ export default {
                 .then((response) => {
                     var data3 = response.data;
                     if (data3.code == "success") {
+                        console.log(data3)
                         this.currentPageData = data3.maps.userList;
                         this.totalPage = data3.maps.totalPage;
                     }
@@ -187,7 +188,7 @@ export default {
                 this.data1 = {
                     page: this.currentPage,
                     userId: this.search,
-                    pageSize:this.pageSize,
+                    pageSize: this.pageSize,
                 };
                 this.getList();
             }
@@ -195,14 +196,16 @@ export default {
         // 下一页
         nextPage() {
             if (this.currentPage == this.totalPage) {
-                return false;}else{
-            this.currentPage++;
-            this.data1 = {
-                page: this.currentPage,
-                userId: this.search,
-                pageSize:this.pageSize,
-            };
-            this.getList();}
+                return false;
+            } else {
+                this.currentPage++;
+                this.data1 = {
+                    page: this.currentPage,
+                    userId: this.search,
+                    pageSize: this.pageSize,
+                };
+                this.getList();
+            }
         },
         // //尾页
         lastPage() {
@@ -211,11 +214,11 @@ export default {
             } else {
                 this.currentPage = this.totalPage;
                 this.data1 = {
-                userId: this.search,
-                page: this.currentPage,
-                pageSize:this.pageSize,
-            };
-            this.getList();
+                    userId: this.search,
+                    page: this.currentPage,
+                    pageSize: this.pageSize,
+                };
+                this.getList();
             }
         },
         //首页
@@ -224,7 +227,7 @@ export default {
             this.data1 = {
                 userId: this.search,
                 page: this.currentPage,
-                pageSize:this.pageSize,
+                pageSize: this.pageSize,
             };
             this.getList();
         },
@@ -289,10 +292,11 @@ export default {
         },
         // 展示编辑用户的对话框
         showEditDialog(id) {
-            
+
             this.editDialogVisible = true
-            this.data1 = {        
-                id: id };
+            this.data1 = {
+                id: id
+            };
             axios({
                 method: 'post',
                 url: this.$http + "/SearchDirect",
@@ -303,7 +307,7 @@ export default {
                     this.editUserForm = response.data.user;
                 })
         },
-       
+
         editUser() {
             if (this.validForm() == true) {
                 this.data1 = {
@@ -370,7 +374,7 @@ export default {
             this.data1 = {
                 userId: this.search,
                 page: 1,
-                pageSize:this.pageSize,
+                pageSize: this.pageSize,
             };
             this.getList();
         },
@@ -379,10 +383,10 @@ export default {
         this.data1 = {
             page: this.currentPage,
             userId: this.search,
-            pageSize:this.pageSize,
+            pageSize: this.pageSize,
         };
         this.getList();
-        
+
     },
 }
 </script>
@@ -435,5 +439,4 @@ body,
     padding-top: 15px;
     padding-left: 8px;
     text-align: center;
-}
-</style>
+}</style>

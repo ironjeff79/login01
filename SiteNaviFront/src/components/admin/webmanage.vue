@@ -23,44 +23,54 @@
 
 <script>
 import * as echarts from "echarts"
+import axios, { } from 'axios'
 import { ElBreadcrumb, ElBreadcrumbItem } from 'element-plus'
 // import { Edit, Setting, Delete, Search } from '@element-plus/icons-vue'  
 export default {
-  data(){
+  data() {
     return {
       value: "",
-      data:[10,20,30,40,50],
-      option : {
+      webId: [],
+      click_count: [],
+      data: [10, 20, 30, 40, 50],
+      option: {
         xAxis: {
           type: 'category',
-          data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+          data: [10, 20, 30, 40, 50],
+          axisLabel: {
+            interval: 0,
+            rotate: 40
+          }
         },
         yAxis: {
           type: 'value'
         },
-        series: [
-          {
-            data: [100, 200, 150, 80, 70, 110, 130],
-            type: 'bar',
-            showBackground: true,
-            backgroundStyle: {
-              color: 'rgba(180, 180, 180, 0.2)'
-            }
+        series:
+        {
+          data: [10, 20, 30, 40, 50],
+          type: 'bar',
+          showBackground: true,
+          backgroundStyle: {
+            color: 'rgba(180, 180, 180, 0.2)'
           }
-        ]
+        },
+
+
       }
     }
   },
-  mounted(){
+  mounted() {
     this.renderChart(5)
-    // this.renderChart(5);
-    const chart = echarts.init(this.$refs.chart);
-    chart.on("click", this.handleChartClick);
+    console.log("!!!mounted")
+
+    // const chart = echarts.init(this.$refs.chart);
+    // chart.on("click", this.handleChartClick);
   },
-  
+
+
   methods: {
     renderChart() {
-      const ChartDom =  this.$refs.chart
+      const ChartDom = this.$refs.chart
       const myChart = echarts.init(ChartDom)
       // const chart = echarts.init(this.$refs.chart);
       myChart.setOption(this.option)
@@ -70,20 +80,54 @@ export default {
 
 
     updateChart() {
-      console.log(this.value);
       this.renderChart(this.value);
+      axios({
+        method: 'post',
+        url: this.$http + "/getWebInfo",
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        data: JSON.stringify(this.value)
+      })
+        .then((response) => {
+          var data3 = response.data;
+          console.log(data3)
+          this.option.xAxis.data = data3.maps.web_id.map(String);
+          this.option.series.data = data3.maps.click_count.map(Number);
+          this.renderChart(this.value);
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
     },
-    handleChartClick(event) {
-      const dataIndex = event.dataIndex;
-      const clickedWebId = this.chartData[dataIndex].webId;
-      const routePath = {
-        path: "/webPage",
-        query: {
-          webId: clickedWebId
-        }
-      };
-      router.push(routePath)
-    }
+    // handleChartClick(event) {
+    //   const dataIndex = event.dataIndex;
+    //   const clickedWebId = this.chartData[dataIndex].webId;
+    //   const routePath = {
+    //     path: "/webPage",
+    //     query: {
+    //       webId: clickedWebId
+    //     }
+    //   };
+    //   router.push(routePath)
+    // },
+  },
+
+  created() {
+    axios({
+      method: 'post',
+      url: this.$http + "/getWebInfo",
+      headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+      data: JSON.stringify(5)
+    })
+      .then((response) => {
+        var data3 = response.data;
+        console.log(data3)
+        this.option.xAxis.data = data3.maps.web_id.map(String);
+        this.option.series.data = data3.maps.click_count.map(Number);
+        this.renderChart(5);
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
   },
 }
 </script>
@@ -97,6 +141,7 @@ body,
   margin: 0;
   padding: 0;
 }
+
 .chart-container {
   width: 100%;
   height: 500px;
@@ -115,6 +160,7 @@ body,
   padding-top: 25px;
   margin-left: 10px;
 }
+
 .ArrowRight {
   padding-top: 15px;
   padding-left: 8px;

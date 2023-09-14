@@ -1,21 +1,21 @@
 <template>
   <el-header style="text-align: right; font-size: 28px">
-  <div class="toolbar">
-    <el-dropdown>
-      <el-icon style="margin-right: 8px; margin-top: 1px">
-        <setting />
-      </el-icon>
-      <template #dropdown>
-        <el-dropdown-menu>
-          <el-dropdown-item @click="changeInfoButton('ruleForm')">個人情報</el-dropdown-item>
-          <el-dropdown-item @click="changePassButton('ruleForm')">パスワード変更</el-dropdown-item>
-          <el-dropdown-item @click="logOutButton()">ログアウト</el-dropdown-item>
-        </el-dropdown-menu>
-      </template>
-    </el-dropdown>
-    <span>{{ userId }}</span>
-  </div>
-</el-header>
+    <div class="toolbar">
+      <el-dropdown>
+        <el-icon style="margin-right: 8px; margin-top: 1px">
+          <setting />
+        </el-icon>
+        <template #dropdown>
+          <el-dropdown-menu>
+            <el-dropdown-item @click="changeInfoButton('ruleForm')">個人情報</el-dropdown-item>
+            <el-dropdown-item @click="changePassButton('ruleForm')">パスワード変更</el-dropdown-item>
+            <el-dropdown-item @click="logOutButton()">ログアウト</el-dropdown-item>
+          </el-dropdown-menu>
+        </template>
+      </el-dropdown>
+      <span>{{ userId }}</span>
+    </div>
+  </el-header>
 
 
   <h1 class="page-title">ホームページ</h1>
@@ -94,7 +94,7 @@ export default {
           var data3 = response.data;
           console.log(data3)
           console.log(data3.sessionId)
-          localStorage.setItem("sessionId","0")
+          localStorage.setItem("sessionId", "0")
           console.log(localStorage.getItem("sessionId",))
           location.href = "/";
         })
@@ -115,6 +115,7 @@ export default {
   },
 }
 </script>
+
 
 <style scoped>
 .page-title {
