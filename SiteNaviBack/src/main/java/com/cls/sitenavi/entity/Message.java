@@ -10,6 +10,7 @@ public class Message<T> {
     private String code;
     private String msg;
     private User user;
+    private List<Web> webList;
     private List<User> userList;
     private List<Comment> comments;
     private String page;
