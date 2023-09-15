@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-
+import com.cls.common.util.Jwt;
 import com.alibaba.fastjson.JSON;
 import com.cls.sitenavi.entity.Message;
 import com.cls.sitenavi.entity.User;
@@ -27,7 +27,7 @@ public class LoginController {
 	public String hello1() {
 		return String.format("ログインしました");
 	}
-
+	
 	@PostMapping("/login")
 	
 	public String login(@RequestBody User user,HttpServletRequest req) {
@@ -41,14 +41,17 @@ public class LoginController {
 				return JSON.toJSONString(msg);
 			} else {
 				msg.setCode("success");
-				HttpSession session = req.getSession();
-				System.out.println("拦截器中的session的id是====" + session.getId());
-				String sessionId =  session.getId();
-				session.setAttribute("user", list);
-				User user1 = (User) session.getAttribute("user");
-				System.out.println(user1);
+				String token = Jwt.sign(user.getUserId(), user.getPassword());
+
+//				HttpSession session = req.getSession();
+//				System.out.println("拦截器中的session的id是====" + session.getId());
+//				String sessionId =  session.getId();
+//				session.setAttribute("user", list);
+//				User user1 = (User) session.getAttribute("user");
+				System.out.println("token-----------");
+				System.out.println(token);
 				msg.setUser(list);
-				msg.setSessionId(sessionId);
+				msg.setToken(token);
 //				session.setMaxInactiveInterval(1);
 				return JSON.toJSONString(msg);
 			}

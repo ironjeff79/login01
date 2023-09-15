@@ -17,6 +17,7 @@ public class Message<T> {
     private Map<String,Object> maps;
     private BigDecimal rate;
     private String sessionId;
+    private String token;
     public String getCode() {
         return code;
     }
