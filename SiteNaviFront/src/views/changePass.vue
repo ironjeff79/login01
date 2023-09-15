@@ -27,6 +27,7 @@
   
   <script>
   import axios, {} from 'axios';
+  import { request } from "@/api/web";
   import { ElMessage } from 'element-plus';
   
   export default {
@@ -111,8 +112,8 @@
       this.ruleForm.mail = this.$route.query.mail;
     this.ruleForm.userId = this.$route.query.userId;
     this.ruleForm.phoneNum = this.$route.query.phoneNum;
-    console.log(localStorage.getItem("sessionId",))
-    const str = localStorage.getItem("sessionId",)
+    console.log(localStorage.getItem("Token",))
+    const str = localStorage.getItem("Token",)
     if (str == 0) {
       ElMessage.warning('登录状态已过期，请重新登录')
       this.$router.go(-1)

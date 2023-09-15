@@ -17,6 +17,7 @@
 
 <script>
 import axios, { } from 'axios'
+import { request } from "@/api/web";
 import { ElMessage } from 'element-plus'
 import router from '../router/router';
 export default {
@@ -54,7 +55,9 @@ export default {
         axios({
           method: 'post',
           url: this.$http + "/login",
-          headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+          headers: { 'Content-Type': 'application/json;charset=UTF-8',
+          //  'Authorization': `Bearer ${accessToken}` 
+        },
           data: this.data1
         })
           .then((response) => {
@@ -63,9 +66,9 @@ export default {
               // location.href = "/?userId=" + this.ruleForm.userId + "loginState : true";
               router.push({ path: '/', query: { loginState: "true", userId: this.ruleForm.userId } })
               console.log(data3);
-              console.log(data3.sessionId);
-              localStorage.setItem("sessionId", data3.sessionId)
-              console.log(localStorage.getItem("sessionId",))
+              localStorage.setItem('Token', data3.token)
+              console.log("login")
+              console.log(localStorage.getItem('Token'))
 
             }
             else if (data3.code == "warning") {

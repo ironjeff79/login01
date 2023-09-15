@@ -27,6 +27,7 @@
   
 <script>
 import axios, { } from 'axios';
+import { request } from "@/api/web";
 import { ElMessage } from 'element-plus';
 
 export default {
@@ -79,11 +80,13 @@ export default {
             phoneNum: this.ruleForm.phoneNum,
             mail: this.ruleForm.mail
           };
+          console.log("发起请求!")
+          console.log(localStorage.getItem('Token'))
           axios({
             method: 'post',
             url: this.$http + "/changeInfo",
-            headers: { 'Content-Type': 'application/json;charset=UTF-8' },
-            data: this.data2
+            headers: { 'Content-Type': 'application/json;charset=UTF-8', 'Authorization': `Bearer ${localStorage.getItem('Token')}`},
+            data: this.data2  
           })
             .then((response) => {
               var data3 = response.data;
@@ -106,12 +109,14 @@ export default {
     }
   },
   created() {
+
     this.ruleForm.mail = this.$route.query.mail;
     this.ruleForm.userId = this.$route.query.userId;
     this.ruleForm.phoneNum = this.$route.query.phoneNum;
     this.ruleForm.pass = this.$route.query.password;
-    console.log(localStorage.getItem("sessionId",))
-    const str = localStorage.getItem("sessionId",)
+    console.log("changeInfo")
+    console.log(localStorage.getItem('Token'))
+    const str = localStorage.getItem('Token')
     if (str == 0) {
       ElMessage.warning('登录状态已过期，请重新登录')
       this.$router.go(-1)

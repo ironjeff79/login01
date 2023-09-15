@@ -272,7 +272,6 @@ export default {
     if (this.$route.query.userId != null) {
       this.userId = this.$route.query.userId;
       this.hasLogin = true;
-      console.log("login successful")
     }
   },
 };

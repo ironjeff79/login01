@@ -163,9 +163,9 @@ export default {
     loadJs();
 
     if (this.$route.query.loginState === "true") {
-      const str = localStorage.getItem("sessionId",)
-      console.log("session Id")
-      console.log(str)
+      console.log("tokenindex")
+      console.log(localStorage.getItem('Token'))
+      const str = localStorage.getItem('Token')
       if (str == 0) {
         ElMessage.warning('登录状态已过期，请重新登录')
         location.href = "/signIn";

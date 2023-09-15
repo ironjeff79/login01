@@ -79,8 +79,8 @@ function output() {
 }
 
 onMounted(() => {
-  console.log(localStorage.getItem("sessionId",))
-  const str = localStorage.getItem("sessionId",)
+  console.log(localStorage.getItem("Token"))
+  const str = localStorage.getItem("Token")
   if (str == 0) {
     ElMessage.warning('登录状态已过期，请重新登录')
     location.href = "/signIn";
