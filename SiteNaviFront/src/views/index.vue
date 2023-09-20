@@ -121,6 +121,7 @@ import { loadJs } from '../assets/js/app.js';
 import Cookies from "js-cookie";
 import router from "../router/router";
 import { ElMessage } from 'element-plus';
+import axios, { } from 'axios';
 
 export default {
   computed: {
@@ -138,6 +139,7 @@ export default {
   },
   data() {
     return {
+      data1:{},
       showname: false,
       hasLogin: false,
       hasSelected: false,
@@ -184,15 +186,31 @@ export default {
       location.href = "/signIn";
     },
     infoForm() {
-      const str = localStorage.getItem("sessionId",)
-      if (str == 0) {
-        ElMessage.warning('登录状态已过期，请重新登录')
-        this.$router.go(-1)
-      }
-      else if (this.userId === "admin") {
-        router.push("/admin")
-      }
-      else { location.href = "/login?userId=" + this.userId; }
+      this.data1 ={  userId: this.$route.query.userId}
+      console.log("has or not")
+      console.log(localStorage.getItem("Token"))
+      axios({
+        method: 'post',
+        url: this.$http + "/toInfo",
+        headers: { 'Content-Type': 'application/json;charset=UTF-8','Authorization': `Bearer ${localStorage.getItem('Token')}` },
+        data: this.data1
+      }).then((response) => {
+        var data3 = response.data;
+        if (data3.code == "success") {
+          if (this.userId === "admin") {
+            router.push("/admin")
+          }
+          else { location.href = "/login?userId=" + this.userId; }
+        }
+        else if (data3.code == "warning") {
+          alert(data3.msg);
+        }
+      })
+        .catch(function (error) {
+          ElMessage.warning('登录状态已过期，请重新登录')
+          router.push("/signIn")
+          console.log(error);
+        });
 
     },
     getInfoFromSon(Web = Object) {

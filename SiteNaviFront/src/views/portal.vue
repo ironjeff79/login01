@@ -48,20 +48,25 @@ export default {
   },
   methods: {
     changeInfoButton() {
+      console.log(localStorage.getItem("Token"))
       this.data1 = {
         userId: this.userId
       };
       axios({
         method: 'post',
         url: this.$http + "/portal",
-        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        headers: { 'Content-Type': 'application/json;charset=UTF-8','Authorization': `${localStorage.getItem('Token')}` },
         data: this.data1
       })
         .then((response) => {
+          console.log("response") 
+          console.log(response)
           this.$router.push({ name: 'changeInfo', query: response.data });
         })
         .catch(function (error) {
+          console.log("error") 
           console.log(error);
+
         });
     },
     changePassButton() {
@@ -71,7 +76,7 @@ export default {
       axios({
         method: 'post',
         url: this.$http + "/portal",
-        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        headers: { 'Content-Type': 'application/json;charset=UTF-8','Authorization': `${localStorage.getItem('Token')}` },
         data: this.data1
       })
         .then((response) => {
@@ -85,21 +90,25 @@ export default {
       this.$router.push({ path: '/admin' });
     },
     logOutButton() {
+      console.log("logout")
+      this.data1 = {
+        userId: this.userId
+      };
       axios({
         method: 'post',
         url: this.$http + "/logOut",
-        headers: { 'Content-Type': 'application/json;charset=UTF-8' }
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        data: this.data1
       })
         .then((response) => {
           var data3 = response.data;
           console.log(data3)
-          console.log(data3.sessionId)
-          localStorage.setItem("sessionId", "0")
-          console.log(localStorage.getItem("sessionId",))
-          location.href = "/";
+          // location.href = "/";
+          localStorage.removeItem('Token')
         })
         .catch(function (error) {
           console.log(error);
+          // location.href = "/";
         });
     }
   },

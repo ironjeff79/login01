@@ -49,13 +49,14 @@ export default {
       if (this.validForm() == true) {
         this.data1 = {
           userId: this.ruleForm.userId,
-          password: this.ruleForm.pass
+          password: this.ruleForm.pass,
+          // status:login
         };
         console.log(this.data1)
         axios({
           method: 'post',
           url: this.$http + "/login",
-          headers: { 'Content-Type': 'application/json;charset=UTF-8',
+          headers: { 'Content-Type': 'application/json;charset=UTF-8'
           //  'Authorization': `Bearer ${accessToken}` 
         },
           data: this.data1

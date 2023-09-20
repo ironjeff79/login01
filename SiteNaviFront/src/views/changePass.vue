@@ -86,8 +86,8 @@
           axios({
             method: 'post',
             url: this.$http +"/changePass",
-            headers: { 'Content-Type': 'application/json;charset=UTF-8' },
-            data: JSON.stringify(this.data2)
+            headers: { 'Content-Type': 'application/json;charset=UTF-8','Authorization': `Bearer ${localStorage.getItem('Token')}` },
+            data: this.data2
           })
             .then((response) => {
               var data3 = response.data;

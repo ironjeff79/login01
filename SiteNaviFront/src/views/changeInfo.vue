@@ -85,7 +85,7 @@ export default {
           axios({
             method: 'post',
             url: this.$http + "/changeInfo",
-            headers: { 'Content-Type': 'application/json;charset=UTF-8', 'Authorization': `Bearer ${localStorage.getItem('Token')}`},
+            headers: { 'Content-Type': 'application/json;charset=UTF-8','Authorization': `Bearer ${localStorage.getItem('Token')}` },
             data: this.data2  
           })
             .then((response) => {
@@ -99,6 +99,7 @@ export default {
               }
             })
             .catch(function (error) {
+              ElMessage.warning('登录状态已过期，请重新登录')
               console.log(error);
             });
         }
