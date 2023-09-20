@@ -11,6 +11,7 @@ public class User {
     private String province;
     private Integer offset;
     private Integer limit;
+    private String token;
 
     public String getUserId() {
         return userId;

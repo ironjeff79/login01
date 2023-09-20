@@ -2,7 +2,6 @@ package com.cls.sitenavi.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -11,17 +10,24 @@ import com.alibaba.fastjson.JSON;
 import com.cls.sitenavi.entity.Message;
 import com.cls.sitenavi.entity.User;
 import com.cls.sitenavi.service.IChangeService;
+import com.cls.sitenavi.service.ILoginService;
 
 @CrossOrigin(origins = "http://localhost:8081")
 @RestController
 public class ChangeInfoController {
 	@Autowired
 	public IChangeService changeService;
+	
+	@Autowired
+	public ILoginService loginService;
+	
+//	@GetMapping("changeInfo")
+//	public String hello1() {
+//		return String.format("ログインしました");
+//	}
 
-	@GetMapping("/changeInfo")
-	public String hello1() {
-		return String.format("ログインしました");
-	}
+	
+	
 
 	@PostMapping("/changeInfo")
 	public String changeInfo(@RequestBody User user) {

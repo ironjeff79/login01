@@ -37,6 +37,18 @@ public class LoginServiceImpl implements ILoginService {
 		}
 		return null;
 	}
+	
+	public void saveToken(User user,String token) {
+		String sql = "UPDATE user SET token = '" + token + "'  WHERE userId ='" + user.getUserId() + "'";
+		 jdbcTemplate.execute(sql);
+	}
+	public void deleteToken(User user,String token) {
+		System.out.println("deleteToken");
+		System.out.println(user);
+		String sql = "UPDATE user SET token = null WHERE userId ='" + user.getUserId() + "'";
+		 jdbcTemplate.execute(sql);
+	}
+	
 
 	public User confirmUserInfo(User user) {
 		String pass = Util.code(user.getPassword());
