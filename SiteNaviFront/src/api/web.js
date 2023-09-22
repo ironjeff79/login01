@@ -8,24 +8,24 @@
 //     }
 //   });
   
-//   //添加一个请求拦截器
-//   request.interceptors.request.use(
-//     config => {
-//       //从本地存储中获取Token
-//       const token = localStorage.getItem("token");
-//       console.log("发送请求")
-//       console.log(localStorage.getItem("token"))
-//       if (!config.url.endsWith('/login')) {
-//         //在请求头中携带Token
-//         config.headers.Token =  `Bearer ${localStorage.getItem('Token')}`;
-//       }
-//       return config;
-//     },
+  //添加一个请求拦截器
+  // request.interceptors.request.use(
+  //   config => {
+  //     //从本地存储中获取Token
+  //     const token = localStorage.getItem("token");
+  //     console.log("发送请求")
+  //     console.log(localStorage.getItem("token"))
+  //     if (!config.url.endsWith('/login')) {
+  //       //在请求头中携带Token
+  //       config.headers.Token =  `Bearer ${token}`;
+  //     }
+  //     return config;
+  //   },
     
-//     error => {
-//       Vue.prototype.$message.error('请求超时')
-//      return Promise.reject(error)}
-//   );
+  //   error => {
+  //     Vue.prototype.$message.error('请求超时')
+  //    return Promise.reject(error)}
+  // );
 // // 将创建好的 axios 实例挂载到 Vue 原型上
 // // Vue.prototype.$interceptors = instance;
 // // Vue.prototype.$http = axios

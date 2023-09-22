@@ -192,8 +192,8 @@ export default {
       axios({
         method: 'post',
         url: this.$http + "/toInfo",
-        headers: { 'Content-Type': 'application/json;charset=UTF-8','Authorization': `Bearer ${localStorage.getItem('Token')}` },
-        data: this.data1
+        headers: { 'Content-Type': 'application/json;charset=UTF-8'},
+        data: JSON.stringify(this.data1)
       }).then((response) => {
         var data3 = response.data;
         if (data3.code == "success") {

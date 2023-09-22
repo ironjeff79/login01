@@ -2,6 +2,7 @@ import { createApp } from 'vue'
 import App from './App.vue'
 import router from './router/router'
 import * as echarts from "echarts"
+import axios, { } from 'axios';
 
 // import { API_BASE_URL } from './config';
 // Vue.prototype.global = API_BASE_URL;
@@ -37,3 +38,22 @@ for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
 
 app.config.globalProperties.$http ='http://localhost:8080'
 app.mount('#app')  
+
+
+axios.interceptors.request.use(
+  config => {
+    //从本地存储中获取Token
+    const token = localStorage.getItem('Token');
+    console.log("发送请求！！！")
+    console.log(localStorage.getItem('Token'))
+    if (!config.url.endsWith('/login')) {
+      //在请求头中携带Token
+      config.headers.Token =  `Bearer ${token}`;
+    }
+    return config;
+  },
+  
+  error => {
+    Vue.prototype.$message.error('请求超时')
+   return Promise.reject(error)}
+);
