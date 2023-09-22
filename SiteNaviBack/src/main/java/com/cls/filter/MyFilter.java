@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.annotation.Order;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.web.bind.annotation.CrossOrigin;
 
 import com.cls.sitenavi.entity.User;
 
@@ -18,14 +19,12 @@ import jakarta.servlet.annotation.WebFilter;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Component;
-import org.springframework.web.bind.annotation.CrossOrigin;
 
 @CrossOrigin(origins = "http://localhost:8081")
 @Slf4j
 @WebFilter(filterName = "authFilter", urlPatterns = "/*")
 @Order(1) //顺序
-@Component
+//@Component
 public class MyFilter implements Filter {
     @Autowired
 	public JdbcTemplate jdbcTemplate;
@@ -39,8 +38,21 @@ public class MyFilter implements Filter {
     String url = req.getRequestURI();
     System.out.println("url");
     System.out.println(url);
+      // 允许的请求方法
+      res.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+      // 允许的请求头
+      res.setHeader("Access-Control-Allow-Headers", "Authorization, Content-Type");
+      // 设置预检请求的有效期，单位为秒
+      res.setHeader("Access-Control-Max-Age", "3600");
+      // 如果是 OPTIONS 请求，直接返回成功状态码
+      if ("OPTIONS".equalsIgnoreCase(req.getMethod())) {
+          res.setStatus(HttpServletResponse.SC_OK);
+          System.out.println("进入OPTIONS方法");
+          return;
+      }
+      System.out.println("离开OPTIONS方法");
 
-    String token = req.getHeader("Authorization");
+    String token = req.getHeader("Token");
     System.out.println("收到的token");
     System.out.println(token);
     log.info("获取到的token为：{}", token);
